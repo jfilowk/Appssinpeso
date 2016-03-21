@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso;
+package com.smartdumbphones.appssinpeso.datasize;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,6 +12,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import com.smartdumbphones.appssinpeso.R;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

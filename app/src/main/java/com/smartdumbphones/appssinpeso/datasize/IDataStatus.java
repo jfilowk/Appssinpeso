@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso;
+package com.smartdumbphones.appssinpeso.datasize;
 
 public interface IDataStatus {
   public void onStatusListner(String msg);

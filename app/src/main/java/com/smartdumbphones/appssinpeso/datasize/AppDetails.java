@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso;
+package com.smartdumbphones.appssinpeso.datasize;
 
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
@@ -18,11 +18,7 @@ public class AppDetails {
   }
 
   public ArrayList<PackageInfoStruct> getPackages() {
-    ArrayList<PackageInfoStruct> apps = getInstalledApps(false); /*
-                                                                     * false =
-                                                                     * no system
-                                                                     * packages
-                                                                     */
+    ArrayList<PackageInfoStruct> apps = getInstalledApps(false);
     final int max = apps.size();
     for (int i = 0; i < max; i++) {
       apps.get(i);
@@ -32,8 +28,7 @@ public class AppDetails {
 
   private ArrayList<PackageInfoStruct> getInstalledApps(boolean getSysPackages) {
 
-    List<PackageInfo> packs = activity.getPackageManager()
-        .getInstalledPackages(0);
+    List<PackageInfo> packs = activity.getPackageManager().getInstalledPackages(0);
     try {
       app_labels = new String[packs.size()];
     } catch (Exception e) {
@@ -45,14 +40,12 @@ public class AppDetails {
         continue;
       }
       PackageInfoStruct newInfo = new PackageInfoStruct();
-      newInfo.appname = p.applicationInfo.loadLabel(
-          activity.getPackageManager()).toString();
+      newInfo.appname = p.applicationInfo.loadLabel(activity.getPackageManager()).toString();
       newInfo.pname = p.packageName;
       newInfo.datadir = p.applicationInfo.dataDir;
       newInfo.versionName = p.versionName;
       newInfo.versionCode = p.versionCode;
-      newInfo.icon = p.applicationInfo.loadIcon(activity
-          .getPackageManager());
+      newInfo.icon = p.applicationInfo.loadIcon(activity.getPackageManager());
       res.add(newInfo);
 
       app_labels[i] = newInfo.appname;
