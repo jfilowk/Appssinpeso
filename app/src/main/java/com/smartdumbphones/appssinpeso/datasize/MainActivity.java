@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
   public static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
-  public static final int ALL_PACAGE_SIZE_COMPLETED = 200;
+  public static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
   IDataStatus onIDataStatus;
   TextView lbl_cache_size;
   ProgressDialog pd;
@@ -68,7 +68,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         e.printStackTrace();
       }
     }
-    handle.sendEmptyMessage(ALL_PACAGE_SIZE_COMPLETED);
+    handle.sendEmptyMessage(ALL_PACKAGE_SIZE_COMPLETED);
     Log.v("Total Cache Size", " " + packageSize);
   }
 
@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
           if (packageSize > 0) size = (packageSize / 1024000);
           lbl_cache_size.setText("Cache Size : " + size + " MB");
           break;
-        case ALL_PACAGE_SIZE_COMPLETED:
+        case ALL_PACKAGE_SIZE_COMPLETED:
           if (null != pd) if (pd.isShowing()) pd.dismiss();
 
           break;
