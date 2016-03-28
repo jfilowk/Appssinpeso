@@ -11,7 +11,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
-import com.smartdumbphones.appssinpeso.datasize.MainActivity;
+import com.smartdumbphones.appssinpeso.datasize.ListCacheActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginView, View.OnClickListener {
 
@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
   }
 
   @Override public void goListApplications() {
-    startActivity(new Intent(this, MainActivity.class));
+    startActivity(new Intent(this, ListCacheActivity.class));
     finish();
   }
 

@@ -12,14 +12,17 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.smartdumbphones.appssinpeso.R;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class ListCacheActivity extends Activity
+    implements View.OnClickListener, ListenerErrorPackage {
   public static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
   public static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
+  private static final int NO_PACKAGE_FOUND = 300;
   IDataStatus onIDataStatus;
   TextView lbl_cache_size;
   ProgressDialog pd;
@@ -83,11 +86,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
           if (null != pd) if (pd.isShowing()) pd.dismiss();
 
           break;
+        case NO_PACKAGE_FOUND:
+          showError();
+          break;
         default:
           break;
       }
     }
   };
+
+  @Override public void onError() {
+    handle.sendEmptyMessage(NO_PACKAGE_FOUND);
+  }
+
+  private void showError() {
+    Toast.makeText(this, "Error no package", Toast.LENGTH_SHORT).show();
+  }
 
   private class cachePackState extends IPackageStatsObserver.Stub {
 

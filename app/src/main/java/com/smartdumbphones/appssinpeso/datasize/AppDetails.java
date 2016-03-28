@@ -1,20 +1,19 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.widget.ListView;
-import android.widget.Toast;
+import com.smartdumbphones.appssinpeso.Appssinpeso;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppDetails {
-  MainActivity activity;
+  private ListenerErrorPackage listener;
   public ArrayList<PackageInfoStruct> res = new ArrayList<>();
-  public ListView listView;
   public String app_labels[];
 
-  public AppDetails(MainActivity activity) {
-    this.activity = activity;
+  public AppDetails(ListenerErrorPackage listener) {
+    this.listener = listener;
   }
 
   public ArrayList<PackageInfoStruct> getPackages() {
@@ -28,11 +27,12 @@ public class AppDetails {
 
   private ArrayList<PackageInfoStruct> getInstalledApps(boolean getSysPackages) {
 
-    List<PackageInfo> packs = activity.getPackageManager().getInstalledPackages(0);
+    PackageManager packageManager = Appssinpeso.getInstance().getPackageManager();
+    List<PackageInfo> packs = packageManager.getInstalledPackages(0);
     try {
       app_labels = new String[packs.size()];
     } catch (Exception e) {
-      Toast.makeText(activity.getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+      listener.onError();
     }
     for (int i = 0; i < packs.size(); i++) {
       PackageInfo p = packs.get(i);
@@ -40,12 +40,12 @@ public class AppDetails {
         continue;
       }
       PackageInfoStruct newInfo = new PackageInfoStruct();
-      newInfo.appname = p.applicationInfo.loadLabel(activity.getPackageManager()).toString();
+      newInfo.appname = p.applicationInfo.loadLabel(packageManager).toString();
       newInfo.pname = p.packageName;
       newInfo.datadir = p.applicationInfo.dataDir;
       newInfo.versionName = p.versionName;
       newInfo.versionCode = p.versionCode;
-      newInfo.icon = p.applicationInfo.loadIcon(activity.getPackageManager());
+      newInfo.icon = p.applicationInfo.loadIcon(packageManager);
       res.add(newInfo);
 
       app_labels[i] = newInfo.appname;
