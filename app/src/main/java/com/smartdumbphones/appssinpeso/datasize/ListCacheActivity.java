@@ -21,12 +21,15 @@ import java.util.ArrayList;
 
 public class ListCacheActivity extends Activity
     implements View.OnClickListener, ListenerErrorPackage {
-  public static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
-  public static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
+  private static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
+  private static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
   private static final int NO_PACKAGE_FOUND = 300;
   IDataStatus onIDataStatus;
   TextView lbl_cache_size;
   ProgressDialog pd;
+  long packageSize = 0, size = 0;
+  AppDetails cAppDetails;
+  public ArrayList<ApplicationInfoStruct> res;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -44,10 +47,6 @@ public class ListCacheActivity extends Activity
     pd.setCancelable(false);
     pd.show();
   }
-
-  long packageSize = 0, size = 0;
-  AppDetails cAppDetails;
-  public ArrayList<ApplicationInfoStruct> res;
 
   private void getpackageSize() {
     cAppDetails = new AppDetails(this);
@@ -108,13 +107,28 @@ public class ListCacheActivity extends Activity
 
     @Override public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
         throws RemoteException {
+      // TODO: Delete when release. Debug.
       Log.d("Package Size", pStats.packageName + "");
-      Log.e("APK Size", pStats.codeSize / 1024000 + "");
-      Log.i("Cache Size", (pStats.cacheSize + pStats.externalCacheSize) / 1024000 + "");
-      Log.w("Data Size", (pStats.dataSize + pStats.externalDataSize) / 1024000 + "");
+      Log.e("APK Size", pStats.codeSize + "");
+      Log.i("Cache Size", (pStats.cacheSize + pStats.externalCacheSize) + "");
+      Log.w("Data Size", (pStats.dataSize + pStats.externalDataSize) + "");
       packageSize = packageSize + pStats.cacheSize;
       Log.v("Total Cache Sizes", " " + packageSize);
+      addSizesApplication(pStats);
       handle.sendEmptyMessage(FETCH_PACKAGE_SIZE_COMPLETED);
+    }
+  }
+
+  private void addSizesApplication(PackageStats pStats) {
+    for (ApplicationInfoStruct applicationInfoStruct : res) {
+      if (applicationInfoStruct.getPname().equals(pStats.packageName)) {
+        applicationInfoStruct.setApkSize(pStats.codeSize);
+        applicationInfoStruct.setCacheSize((pStats.cacheSize + pStats.externalCacheSize));
+        applicationInfoStruct.setDataSize((pStats.dataSize + pStats.externalDataSize));
+        applicationInfoStruct.setTotalSize(
+            pStats.codeSize + (pStats.cacheSize + pStats.externalCacheSize) + (pStats.dataSize
+                + pStats.externalDataSize));
+      }
     }
   }
 

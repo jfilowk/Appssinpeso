@@ -7,6 +7,10 @@ public class ApplicationInfoStruct {
   private String pname = "";
   private Drawable icon;
   private String datadir = "";
+  private long apkSize = 0;
+  private long cacheSize = 0;
+  private long dataSize = 0;
+  private long totalSize = 0;
 
   public ApplicationInfoStruct() {
   }
@@ -41,5 +45,37 @@ public class ApplicationInfoStruct {
 
   public void setDatadir(String datadir) {
     this.datadir = datadir;
+  }
+
+  public long getApkSize() {
+    return apkSize;
+  }
+
+  public void setApkSize(long apkSize) {
+    this.apkSize = apkSize;
+  }
+
+  public long getCacheSize() {
+    return cacheSize;
+  }
+
+  public void setCacheSize(long cacheSize) {
+    this.cacheSize = cacheSize;
+  }
+
+  public long getDataSize() {
+    return dataSize;
+  }
+
+  public void setDataSize(long dataSize) {
+    this.dataSize = dataSize;
+  }
+
+  public long getTotalSize() {
+    return totalSize;
+  }
+
+  public void setTotalSize(long totalSize) {
+    this.totalSize = apkSize+cacheSize;
   }
 }

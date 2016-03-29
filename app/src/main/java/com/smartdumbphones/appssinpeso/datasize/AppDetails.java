@@ -10,7 +10,6 @@ import java.util.List;
 public class AppDetails {
   private ListenerErrorPackage listener;
   public ArrayList<ApplicationInfoStruct> res = new ArrayList<>();
-  public String app_labels[];
 
   public AppDetails(ListenerErrorPackage listener) {
     this.listener = listener;
@@ -29,11 +28,11 @@ public class AppDetails {
 
     PackageManager packageManager = Appssinpeso.getInstance().getPackageManager();
     List<PackageInfo> packs = packageManager.getInstalledPackages(0);
-    try {
-      app_labels = new String[packs.size()];
-    } catch (Exception e) {
+
+    if (packs.size() == 0) {
       listener.onError();
     }
+
     for (int i = 0; i < packs.size(); i++) {
       PackageInfo p = packs.get(i);
       if ((!getSysPackages) && (p.versionName == null)) {
@@ -45,8 +44,6 @@ public class AppDetails {
       newInfo.setDatadir(p.applicationInfo.dataDir);
       newInfo.setIcon(p.applicationInfo.loadIcon(packageManager));
       res.add(newInfo);
-
-      app_labels[i] = newInfo.getAppname();
     }
     return res;
   }
