@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.smartdumbphones.appssinpeso.R;
+import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class ListCacheActivity extends Activity
 
   long packageSize = 0, size = 0;
   AppDetails cAppDetails;
-  public ArrayList<AppDetails.PackageInfoStruct> res;
+  public ArrayList<ApplicationInfoStruct> res;
 
   private void getpackageSize() {
     cAppDetails = new AppDetails(this);
@@ -58,7 +59,7 @@ public class ListCacheActivity extends Activity
       try {
         getPackageSizeInfo = pm.getClass()
             .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
-        getPackageSizeInfo.invoke(pm, res.get(m).pname, new cachePackState());
+        getPackageSizeInfo.invoke(pm, res.get(m).getPname(), new cachePackState());
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (NoSuchMethodException e) {
@@ -108,8 +109,9 @@ public class ListCacheActivity extends Activity
     @Override public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
         throws RemoteException {
       Log.d("Package Size", pStats.packageName + "");
-      Log.i("Cache Size", pStats.cacheSize + "");
-      Log.w("Data Size", pStats.dataSize + "");
+      Log.e("APK Size", pStats.codeSize / 1024000 + "");
+      Log.i("Cache Size", (pStats.cacheSize + pStats.externalCacheSize) / 1024000 + "");
+      Log.w("Data Size", (pStats.dataSize + pStats.externalDataSize) / 1024000 + "");
       packageSize = packageSize + pStats.cacheSize;
       Log.v("Total Cache Sizes", " " + packageSize);
       handle.sendEmptyMessage(FETCH_PACKAGE_SIZE_COMPLETED);
