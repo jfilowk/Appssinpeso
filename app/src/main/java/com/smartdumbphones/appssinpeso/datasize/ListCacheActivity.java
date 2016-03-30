@@ -21,6 +21,8 @@ import com.smartdumbphones.appssinpeso.datasize.adapters.ListApplicationAdapter;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListCacheActivity extends Activity implements ListenerErrorPackage {
@@ -44,11 +46,12 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.list_cache_activity);
     ButterKnife.bind(this);
-    initGetPackageSize();
-    recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
+    res = new ArrayList<>();
     adapter = new ListApplicationAdapter(res);
     recyclerList.setAdapter(adapter);
+    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+    initGetPackageSize();
 
     // clearCache();
   }
@@ -79,7 +82,8 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
 
   private void getpackageSize() {
     cAppDetails = new AppDetails(this);
-    res = cAppDetails.getPackages();
+    res.clear();
+    res.addAll(cAppDetails.getPackages());
     if (res == null) return;
     for (int m = 0; m < res.size(); m++) {
       PackageManager pm = getPackageManager();
@@ -112,9 +116,8 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
           lbl_cache_size.setText("Cache Size : " + size + " MB");
           break;
         case ALL_PACKAGE_SIZE_COMPLETED:
-          adapter.notifyDataSetChanged();
           if (null != pd) if (pd.isShowing()) pd.dismiss();
-
+          updateListApplication();
           break;
         case NO_PACKAGE_FOUND:
           showError();
@@ -124,6 +127,10 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
       }
     }
   };
+
+  private void updateListApplication() {
+    adapter.notifyDataSetChanged();
+  }
 
   @Override public void onError() {
     handle.sendEmptyMessage(NO_PACKAGE_FOUND);
@@ -152,14 +159,22 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
   private void addSizesApplication(PackageStats pStats) {
     for (ApplicationInfoStruct applicationInfoStruct : res) {
       if (applicationInfoStruct.getPname().equals(pStats.packageName)) {
-        applicationInfoStruct.setApkSize(pStats.codeSize);
-        applicationInfoStruct.setCacheSize((pStats.cacheSize + pStats.externalCacheSize));
-        applicationInfoStruct.setDataSize((pStats.dataSize + pStats.externalDataSize));
-        applicationInfoStruct.setTotalSize(
+        applicationInfoStruct.setApkSize(convertToMb(pStats.codeSize));
+        applicationInfoStruct.setCacheSize(
+            convertToMb(pStats.cacheSize + pStats.externalCacheSize));
+        applicationInfoStruct.setDataSize(convertToMb(pStats.dataSize + pStats.externalDataSize));
+        applicationInfoStruct.setTotalSize(convertToMb(
             pStats.codeSize + (pStats.cacheSize + pStats.externalCacheSize) + (pStats.dataSize
-                + pStats.externalDataSize));
+                + pStats.externalDataSize)));
       }
     }
+  }
+
+  private float convertToMb(long size) {
+    float v = (float) size / 1024000;
+    DecimalFormat format = new DecimalFormat();
+    format.setMaximumFractionDigits(1);
+    return Float.parseFloat(format.format(v));
   }
 
 /*  @Override public void onClick(View v) {

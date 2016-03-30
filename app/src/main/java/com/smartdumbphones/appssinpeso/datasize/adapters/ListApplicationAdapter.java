@@ -32,10 +32,10 @@ public class ListApplicationAdapter
 
     public void bindApplicationInfo(ApplicationInfoStruct applicationInfoStruct) {
       txtNameApplication.setText(applicationInfoStruct.getAppname());
-      txtAppSize.setText(String.valueOf(applicationInfoStruct.getApkSize()));
-      txtCacheSize.setText(String.valueOf(applicationInfoStruct.getCacheSize()));
-      txtDataSize.setText(String.valueOf(applicationInfoStruct.getDataSize()));
-      txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()));
+      txtAppSize.setText("App: " + String.valueOf(applicationInfoStruct.getApkSize()) + "MB");
+      txtCacheSize.setText("Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + "MB");
+      txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + "MB");
+      txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()) + "MB");
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
   }
@@ -57,9 +57,6 @@ public class ListApplicationAdapter
   }
 
   @Override public int getItemCount() {
-    if (listApplication == null || listApplication.size() == 0) {
-      return 0;
-    }
-    return listApplication.size();
+    return listApplication == null ? 0 : listApplication.size();
   }
 }
