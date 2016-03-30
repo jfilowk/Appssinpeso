@@ -11,9 +11,17 @@
     tools:context=".datasize.ListCacheActivity"
     >
 
-    <TextView
-        android:id="@+id/lbl_cache_size"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Cache Size : " />
+  <TextView
+      android:id="@+id/lbl_cache_size"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="Cache Size : "
+      />
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/lbl_cache_size"
+      />
 </RelativeLayout>

@@ -9,10 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
+import com.smartdumbphones.appssinpeso.datasize.adapters.ListApplicationAdapter;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,19 +27,29 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
   private static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
   private static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
   private static final int NO_PACKAGE_FOUND = 300;
+
   IDataStatus onIDataStatus;
-  TextView lbl_cache_size;
+
+  @Bind(R.id.lbl_cache_size) TextView lbl_cache_size;
+  @Bind(R.id.recycler_list) RecyclerView recyclerList;
   ProgressDialog pd;
-  long packageSize = 0, size = 0;
+
+  private long packageSize = 0;
+  private long size = 0;
   AppDetails cAppDetails;
-  public List<ApplicationInfoStruct> res;
+  private List<ApplicationInfoStruct> res;
+  ListApplicationAdapter adapter;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.list_cache_activity);
-    lbl_cache_size = (TextView) findViewById(R.id.lbl_cache_size);
-
+    ButterKnife.bind(this);
     initGetPackageSize();
+    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+
+    adapter = new ListApplicationAdapter(res);
+    recyclerList.setAdapter(adapter);
+
     // clearCache();
   }
 
@@ -97,6 +112,7 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
           lbl_cache_size.setText("Cache Size : " + size + " MB");
           break;
         case ALL_PACKAGE_SIZE_COMPLETED:
+          adapter.notifyDataSetChanged();
           if (null != pd) if (pd.isShowing()) pd.dismiss();
 
           break;
