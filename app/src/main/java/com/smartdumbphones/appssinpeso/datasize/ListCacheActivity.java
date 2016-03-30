@@ -10,17 +10,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.List;
 
-public class ListCacheActivity extends Activity
-    implements View.OnClickListener, ListenerErrorPackage {
+public class ListCacheActivity extends Activity implements ListenerErrorPackage {
   private static final int FETCH_PACKAGE_SIZE_COMPLETED = 100;
   private static final int ALL_PACKAGE_SIZE_COMPLETED = 200;
   private static final int NO_PACKAGE_FOUND = 300;
@@ -29,14 +27,30 @@ public class ListCacheActivity extends Activity
   ProgressDialog pd;
   long packageSize = 0, size = 0;
   AppDetails cAppDetails;
-  public ArrayList<ApplicationInfoStruct> res;
+  public List<ApplicationInfoStruct> res;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    findViewById(R.id.btn_get_cacheSize).setOnClickListener(this);
+    setContentView(R.layout.list_cache_activity);
     lbl_cache_size = (TextView) findViewById(R.id.lbl_cache_size);
+
+    initGetPackageSize();
     // clearCache();
+  }
+
+  private void initGetPackageSize() {
+    size = 0;
+    packageSize = 0;
+    showProgress("Calculating Cache Size..!!!");
+    /***
+     * You can also use async task
+     * **/
+    new Thread(new Runnable() {
+
+      @Override public void run() {
+        getpackageSize();
+      }
+    }).start();
   }
 
   private void showProgress(String message) {
@@ -132,15 +146,15 @@ public class ListCacheActivity extends Activity
     }
   }
 
-  @Override public void onClick(View v) {
+/*  @Override public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_get_cacheSize:
         size = 0;
         packageSize = 0;
         showProgress("Calculating Cache Size..!!!");
-        /**
-         * You can also use async task
-         * */
+        *//**
+   * You can also use async task
+   * *//*
         new Thread(new Runnable() {
 
           @Override public void run() {
@@ -150,5 +164,5 @@ public class ListCacheActivity extends Activity
 
         break;
     }
-  }
+  }*/
 }
