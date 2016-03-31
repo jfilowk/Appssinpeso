@@ -33,8 +33,17 @@ public class ListApplicationAdapter
     public void bindApplicationInfo(ApplicationInfoStruct applicationInfoStruct) {
       txtNameApplication.setText(applicationInfoStruct.getAppname());
       txtAppSize.setText("App: " + String.valueOf(applicationInfoStruct.getApkSize()) + "MB");
-      txtCacheSize.setText("Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + "MB");
-      txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + "MB");
+      if (applicationInfoStruct.getCacheSize() == 0.0) {
+        txtCacheSize.setText("Cache: -");
+      } else {
+        txtCacheSize.setText(
+            "Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + "MB");
+      }
+      if (applicationInfoStruct.getDataSize() == 0.0) {
+        txtDataSize.setText("Data: -");
+      } else {
+        txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + "MB");
+      }
       txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()) + "MB");
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
