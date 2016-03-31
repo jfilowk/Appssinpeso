@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListCacheActivity extends Activity implements ListenerErrorPackage {
@@ -83,7 +84,13 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
   private void getpackageSize() {
     cAppDetails = new AppDetails(this);
     res.clear();
-    res.addAll(cAppDetails.getPackages());
+    ArrayList<ApplicationInfoStruct> packages = cAppDetails.getPackages();
+    java.util.Collections.sort(packages, new Comparator<ApplicationInfoStruct>() {
+      @Override public int compare(ApplicationInfoStruct lhs, ApplicationInfoStruct rhs) {
+        return lhs.getAppname().compareTo(rhs.getAppname());
+      }
+    });
+    res.addAll(packages);
     if (res == null) return;
     for (int m = 0; m < res.size(); m++) {
       PackageManager pm = getPackageManager();

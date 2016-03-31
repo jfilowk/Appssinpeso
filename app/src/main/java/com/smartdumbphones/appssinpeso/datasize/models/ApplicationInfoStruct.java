@@ -11,6 +11,7 @@ public class ApplicationInfoStruct {
   private float cacheSize = 0;
   private float dataSize = 0;
   private float totalSize = 0;
+  private boolean isSystem;
 
   public ApplicationInfoStruct() {
   }
@@ -76,6 +77,14 @@ public class ApplicationInfoStruct {
   }
 
   public void setTotalSize(float totalSize) {
-    this.totalSize = apkSize+cacheSize;
+    this.totalSize = apkSize + cacheSize;
+  }
+
+  public boolean isSystem() {
+    return isSystem;
+  }
+
+  public void setIsSystem(boolean isSystem) {
+    this.isSystem = isSystem;
   }
 }
