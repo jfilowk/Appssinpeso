@@ -10,10 +10,9 @@ public class CachePackState extends IPackageStatsObserver.Stub {
 
   private ApplicationInfoStruct applicationInfoStruct;
   private long packageSize;
+  private Callback callback;
 
-  public CachePackState(ApplicationInfoStruct applicationInfoStruct, long packageSize) {
-    this.applicationInfoStruct = applicationInfoStruct;
-    this.packageSize = packageSize;
+  public CachePackState() {
   }
 
   public ApplicationInfoStruct getApplicationInfoStruct() {
@@ -24,10 +23,24 @@ public class CachePackState extends IPackageStatsObserver.Stub {
     return packageSize;
   }
 
+  interface Callback {
+    void onSuccess(PackageStats stats);
+  }
+
+  public void calculate(ApplicationInfoStruct applicationInfoStruct, Callback callback) {
+    this.applicationInfoStruct = applicationInfoStruct;
+    this.callback = callback;
+  }
+
   @Override public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
       throws RemoteException {
     addSizesApplication(pStats);
-    packageSize = packageSize + pStats.cacheSize + pStats.externalCacheSize;
+
+    //long packageSize = pStats.cacheSize + pStats.externalCacheSize;
+    //
+    if (callback != null) {
+      callback.onSuccess(pStats);
+    }
   }
 
   private void addSizesApplication(PackageStats pStats) {

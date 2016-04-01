@@ -3,12 +3,14 @@ package com.smartdumbphones.appssinpeso.datasize;
 import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageStats;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +20,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private OnApplicationsListener listener;
   private Context context;
   private long packageSize = 0;
+
+  private int packagesSize;
+
+  private List<PackageStats> statsList = new ArrayList<>();
 
   public ApplicationsManagerImpl(Context context) {
     this.context = context;
@@ -34,7 +40,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
       @Override public void run() {
         AppDetails appDetails = new AppDetails();
         ArrayList<ApplicationInfoStruct> packages = appDetails.getPackages();
-        if (packages.size() == 0) {
+        packagesSize = packages.size();
+        if (packagesSize == 0) {
           notifyOnError();
         } else {
           sortPackagesAlpha(packages);
@@ -44,9 +51,16 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               PackageManager packageManager = context.getPackageManager();
               Method getPackageSizeInfo = packageManager.getClass()
                   .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
-              getPackageSizeInfo.invoke(packageManager, aPackage.getPname(),
-                  new CachePackState(aPackage, packageSize));
-              notifyOnSuccess();
+
+              CachePackState cachePackState = new CachePackState();
+              cachePackState.calculate(aPackage, new CachePackState.Callback() {
+                @Override public void onSuccess(PackageStats stats) {
+                  statsList.add(stats);
+                  notifyResult();
+                }
+              });
+
+              getPackageSizeInfo.invoke(packageManager, aPackage.getPname(), cachePackState);
             } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
               e.printStackTrace();
               notifyOnError();
@@ -55,6 +69,12 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         }
       }
     });
+  }
+
+  private void notifyResult() {
+    if (statsList.size() == packagesSize) {
+      notifyOnSuccess();
+    }
   }
 
   private void notifyOnSuccess() {
