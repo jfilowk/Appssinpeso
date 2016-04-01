@@ -36,34 +36,36 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   // TODO: Listener
   @Override public void start() {
-    executorService.submit(new Runnable() {
-      @Override public void run() {
-        AppDetails appDetails = new AppDetails();
-        listApplications = appDetails.getPackages();
-        if (listApplications.size() == 0) {
-          notifyOnError();
-        } else {
-          sortPackagesAlpha(listApplications);
-          for (ApplicationInfoStruct aPackage : listApplications) {
-            try {
-              PackageManager packageManager = context.getPackageManager();
-              Method getPackageSizeInfo = packageManager.getClass()
-                  .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
-              getPackageSizeInfo.invoke(packageManager, aPackage.getPname(),
-                  new CachePackState(new CachePackState.Callback() {
-                    @Override public void onSuccess(PackageStats stats) {
-                      listPackageStats.add(stats);
-                      notifyOnSuccess();
-                    }
-                  }));
-            } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-              e.printStackTrace();
-              notifyOnError();
+    if (this.listener != null) {
+      executorService.submit(new Runnable() {
+        @Override public void run() {
+          AppDetails appDetails = new AppDetails();
+          listApplications = appDetails.getPackages();
+          if (listApplications.size() == 0) {
+            notifyOnError();
+          } else {
+            sortPackagesAlpha(listApplications);
+            for (ApplicationInfoStruct aPackage : listApplications) {
+              try {
+                PackageManager packageManager = context.getPackageManager();
+                Method getPackageSizeInfo = packageManager.getClass()
+                    .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
+                getPackageSizeInfo.invoke(packageManager, aPackage.getPname(),
+                    new CachePackState(new CachePackState.Callback() {
+                      @Override public void onSuccess(PackageStats stats) {
+                        listPackageStats.add(stats);
+                        notifyOnSuccess();
+                      }
+                    }));
+              } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+                notifyOnError();
+              }
             }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   private void notifyOnSuccess() {

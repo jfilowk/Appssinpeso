@@ -1,5 +1,6 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +14,15 @@ import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCache2Activity extends AppCompatActivity {
+public class ListCache2Activity extends AppCompatActivity implements ListCacheView {
 
   @Bind(R.id.lbl_cache_size) TextView lbl_cache_size;
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
+  private ProgressDialog progressDialog;
   private List<ApplicationInfoStruct> res;
   private ListApplicationAdapter adapter;
+
+  private ListCachePresenter presenter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -29,5 +33,29 @@ public class ListCache2Activity extends AppCompatActivity {
     adapter = new ListApplicationAdapter(res);
     recyclerList.setAdapter(adapter);
     recyclerList.setLayoutManager(new LinearLayoutManager(this));
+
+    presenter = new ListCachePresenterImpl(this);
+  }
+
+  @Override public void showLoading() {
+    progressDialog = new ProgressDialog(this);
+    progressDialog.setIcon(android.R.drawable.alert_dark_frame);
+    progressDialog.setMessage("Loading");
+    progressDialog.setCancelable(false);
+    progressDialog.show();
+
+    presenter.getPackages();
+  }
+
+  @Override public void hideLoading() {
+    progressDialog.dismiss();
+  }
+
+  @Override public void displayListCache() {
+    
+  }
+
+  @Override public void showError(String error) {
+
   }
 }
