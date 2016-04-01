@@ -34,7 +34,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     this.listener = listener;
   }
 
-  // TODO: Listener
   @Override public void start() {
     if (this.listener != null) {
       executorService.submit(new Runnable() {
@@ -109,9 +108,11 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     applicationInfoStruct.setApkSize(convertToMb(pStats.codeSize));
     applicationInfoStruct.setCacheSize(convertToMb(pStats.cacheSize + pStats.externalCacheSize));
     applicationInfoStruct.setDataSize(convertToMb(pStats.dataSize + pStats.externalDataSize));
-    applicationInfoStruct.setTotalSize(applicationInfoStruct.getApkSize()
-        + applicationInfoStruct.getCacheSize()
-        + applicationInfoStruct.getDataSize());
+    applicationInfoStruct.setTotalSize(convertToMb((pStats.codeSize
+        + pStats.cacheSize
+        + pStats.externalCacheSize
+        + pStats.dataSize
+        + pStats.externalDataSize)));
   }
 
   private float convertToMb(long size) {

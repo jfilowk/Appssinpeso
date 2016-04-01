@@ -24,7 +24,7 @@ public class ListCachePresenterImpl
   }
 
   @Override public void onDestroy() {
-
+    Appssinpeso.getApplicationsManager().stop();
   }
 
   @Override public void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList) {

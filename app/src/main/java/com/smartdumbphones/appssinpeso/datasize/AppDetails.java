@@ -14,12 +14,7 @@ public class AppDetails {
   }
 
   public ArrayList<ApplicationInfoStruct> getPackages() {
-    ArrayList<ApplicationInfoStruct> apps = getInstalledApps(false);
-    final int max = apps.size();
-    for (int i = 0; i < max; i++) {
-      apps.get(i);
-    }
-    return apps;
+    return getInstalledApps(false);
   }
 
   private ArrayList<ApplicationInfoStruct> getInstalledApps(boolean getSysPackages) {
