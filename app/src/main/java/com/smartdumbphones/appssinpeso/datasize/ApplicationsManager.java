@@ -13,7 +13,7 @@ public interface ApplicationsManager {
   interface OnApplicationsListener {
     // TODO: 01/04/16 add object to return
 
-    void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList);
+    void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList, float totalCacheSize);
 
     void onError();
   }

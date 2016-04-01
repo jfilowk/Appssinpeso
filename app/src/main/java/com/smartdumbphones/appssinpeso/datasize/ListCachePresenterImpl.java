@@ -27,9 +27,10 @@ public class ListCachePresenterImpl
     Appssinpeso.getApplicationsManager().stop();
   }
 
-  @Override public void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList) {
+  @Override public void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList,
+      float totalCacheSize) {
     view.hideLoading();
-    view.displayListCache(applicationInfoStructList);
+    view.displayListCache(applicationInfoStructList, totalCacheSize);
   }
 
   @Override public void onError() {

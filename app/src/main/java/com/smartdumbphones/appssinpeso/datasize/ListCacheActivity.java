@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ListCacheActivity extends AppCompatActivity implements ListCacheView {
 
-  @Bind(R.id.lblCacheSize) TextView txtCacheSize;
+  @Bind(R.id.lblCacheSize) TextView lblCacheSize;
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
   private ProgressDialog progressDialog;
   private List<ApplicationInfoStruct> res;
@@ -49,12 +49,15 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
     progressDialog.dismiss();
   }
 
-  @Override public void displayListCache(final List<ApplicationInfoStruct> applicationInfoStructList) {
+  @Override
+  public void displayListCache(final List<ApplicationInfoStruct> applicationInfoStructList,
+      final float totalCacheSize) {
     runOnUiThread(new Runnable() {
       @Override public void run() {
         res.clear();
         res.addAll(applicationInfoStructList);
         adapter.notifyDataSetChanged();
+        lblCacheSize.setText(String.format("Cache size: %sMB", String.valueOf(totalCacheSize)));
       }
     });
   }

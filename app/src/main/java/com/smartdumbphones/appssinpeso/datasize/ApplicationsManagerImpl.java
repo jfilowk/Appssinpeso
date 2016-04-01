@@ -20,7 +20,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private ExecutorService executorService;
   private OnApplicationsListener listener;
   private Context context;
-  private long packageSize = 0;
+  private long totalCacheSize = 0;
   private List<ApplicationInfoStruct> listApplications;
   private List<PackageStats> listPackageStats;
 
@@ -69,18 +69,19 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private void notifyOnSuccess() {
     if (listApplications.size() == listPackageStats.size()) {
+      float totalCacheSizeFloat = convertToMb(totalCacheSize);
       for (ApplicationInfoStruct listApplication : listApplications) {
         for (PackageStats listPackageStat : listPackageStats) {
           if (listApplication.getPname().equals(listPackageStat.packageName)) {
             addSizesApplication(listPackageStat, listApplication);
-            packageSize =
-                packageSize + listPackageStat.cacheSize + listPackageStat.externalCacheSize;
+            totalCacheSize =
+                totalCacheSize + listPackageStat.cacheSize + listPackageStat.externalCacheSize;
             break;
           }
         }
       }
       if (listener != null) {
-        listener.onSuccess(listApplications);
+        listener.onSuccess(listApplications, totalCacheSizeFloat);
       }
     }
   }

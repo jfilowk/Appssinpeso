@@ -8,7 +8,7 @@ public interface ListCacheView {
 
   void hideLoading();
 
-  void displayListCache(List<ApplicationInfoStruct> applicationInfoStructList);
+  void displayListCache(List<ApplicationInfoStruct> applicationInfoStructList, float totalCacheSize);
 
   void showError(String error);
 }
