@@ -81,7 +81,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         }
       }
       if (listener != null) {
-        listener.onSuccess();
+        listener.onSuccess(listApplications);
       }
     }
   }

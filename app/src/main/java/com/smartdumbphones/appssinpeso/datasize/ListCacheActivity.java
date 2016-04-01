@@ -33,7 +33,7 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
 
   IDataStatus onIDataStatus;
 
-  @Bind(R.id.lbl_cache_size) TextView lbl_cache_size;
+  @Bind(R.id.lblCacheSize) TextView lbl_cache_size;
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
   ProgressDialog pd;
 

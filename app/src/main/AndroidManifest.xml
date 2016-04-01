@@ -20,7 +20,7 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".datasize.ListCacheActivity">
+    <activity android:name=".datasize.ListCache2Activity">
 
     </activity>
   </application>

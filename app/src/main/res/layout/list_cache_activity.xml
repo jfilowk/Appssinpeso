@@ -12,7 +12,7 @@
     >
 
   <TextView
-      android:id="@+id/txtCacheSize"
+      android:id="@+id/lblCacheSize"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:text="Cache Size : "
@@ -22,6 +22,6 @@
       android:id="@+id/recycler_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_below="@+id/lbl_cache_size"
+      android:layout_below="@+id/lblCacheSize"
       />
 </RelativeLayout>

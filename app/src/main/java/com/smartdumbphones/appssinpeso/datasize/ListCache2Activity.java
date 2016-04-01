@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ListCache2Activity extends AppCompatActivity implements ListCacheView {
 
-  @Bind(R.id.lbl_cache_size) TextView lbl_cache_size;
+  @Bind(R.id.lblCacheSize) TextView txtCacheSize;
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
   private ProgressDialog progressDialog;
   private List<ApplicationInfoStruct> res;
@@ -40,7 +40,7 @@ public class ListCache2Activity extends AppCompatActivity implements ListCacheVi
   @Override public void showLoading() {
     progressDialog = new ProgressDialog(this);
     progressDialog.setIcon(android.R.drawable.alert_dark_frame);
-    progressDialog.setMessage("Loading");
+    progressDialog.setMessage("Loading...");
     progressDialog.setCancelable(false);
     progressDialog.show();
 
@@ -51,8 +51,10 @@ public class ListCache2Activity extends AppCompatActivity implements ListCacheVi
     progressDialog.dismiss();
   }
 
-  @Override public void displayListCache() {
-    
+  @Override public void displayListCache(List<ApplicationInfoStruct> applicationInfoStructList) {
+    res.clear();
+    res.addAll(applicationInfoStructList);
+    adapter.notifyDataSetChanged();
   }
 
   @Override public void showError(String error) {
