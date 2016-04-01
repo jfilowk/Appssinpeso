@@ -7,6 +7,7 @@ import android.content.pm.PackageStats;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,14 +21,13 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private OnApplicationsListener listener;
   private Context context;
   private long packageSize = 0;
-
-  private int packagesSize;
-
-  private List<PackageStats> statsList = new ArrayList<>();
+  private List<ApplicationInfoStruct> listApplications;
+  private List<PackageStats> listPackageStats;
 
   public ApplicationsManagerImpl(Context context) {
     this.context = context;
     this.executorService = Executors.newSingleThreadExecutor();
+    this.listPackageStats = new ArrayList<>();
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -39,28 +39,23 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     executorService.submit(new Runnable() {
       @Override public void run() {
         AppDetails appDetails = new AppDetails();
-        ArrayList<ApplicationInfoStruct> packages = appDetails.getPackages();
-        packagesSize = packages.size();
-        if (packagesSize == 0) {
+        listApplications = appDetails.getPackages();
+        if (listApplications.size() == 0) {
           notifyOnError();
         } else {
-          sortPackagesAlpha(packages);
-
-          for (ApplicationInfoStruct aPackage : packages) {
+          sortPackagesAlpha(listApplications);
+          for (ApplicationInfoStruct aPackage : listApplications) {
             try {
               PackageManager packageManager = context.getPackageManager();
               Method getPackageSizeInfo = packageManager.getClass()
                   .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
-
-              CachePackState cachePackState = new CachePackState();
-              cachePackState.calculate(aPackage, new CachePackState.Callback() {
-                @Override public void onSuccess(PackageStats stats) {
-                  statsList.add(stats);
-                  notifyResult();
-                }
-              });
-
-              getPackageSizeInfo.invoke(packageManager, aPackage.getPname(), cachePackState);
+              getPackageSizeInfo.invoke(packageManager, aPackage.getPname(),
+                  new CachePackState(new CachePackState.Callback() {
+                    @Override public void onSuccess(PackageStats stats) {
+                      listPackageStats.add(stats);
+                      notifyOnSuccess();
+                    }
+                  }));
             } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
               e.printStackTrace();
               notifyOnError();
@@ -71,15 +66,21 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     });
   }
 
-  private void notifyResult() {
-    if (statsList.size() == packagesSize) {
-      notifyOnSuccess();
-    }
-  }
-
   private void notifyOnSuccess() {
-    if (listener != null) {
-      listener.onSuccess();
+    if (listApplications.size() == listPackageStats.size()) {
+      for (ApplicationInfoStruct listApplication : listApplications) {
+        for (PackageStats listPackageStat : listPackageStats) {
+          if (listApplication.getPname().equals(listPackageStat.packageName)) {
+            addSizesApplication(listPackageStat, listApplication);
+            packageSize =
+                packageSize + listPackageStat.cacheSize + listPackageStat.externalCacheSize;
+            break;
+          }
+        }
+      }
+      if (listener != null) {
+        listener.onSuccess();
+      }
     }
   }
 
@@ -89,7 +90,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     }
   }
 
-  private void sortPackagesAlpha(ArrayList<ApplicationInfoStruct> packages) {
+  private void sortPackagesAlpha(List<ApplicationInfoStruct> packages) {
     Collections.sort(packages, new Comparator<ApplicationInfoStruct>() {
       @Override public int compare(ApplicationInfoStruct lhs, ApplicationInfoStruct rhs) {
         return lhs.getAppname().compareTo(rhs.getAppname());
@@ -99,5 +100,22 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   @Override public void stop() {
     listener = null;
+  }
+
+  private void addSizesApplication(PackageStats pStats,
+      ApplicationInfoStruct applicationInfoStruct) {
+    applicationInfoStruct.setApkSize(convertToMb(pStats.codeSize));
+    applicationInfoStruct.setCacheSize(convertToMb(pStats.cacheSize + pStats.externalCacheSize));
+    applicationInfoStruct.setDataSize(convertToMb(pStats.dataSize + pStats.externalDataSize));
+    applicationInfoStruct.setTotalSize(applicationInfoStruct.getApkSize()
+        + applicationInfoStruct.getCacheSize()
+        + applicationInfoStruct.getDataSize());
+  }
+
+  private float convertToMb(long size) {
+    float v = (float) size / 1024000;
+    DecimalFormat format = new DecimalFormat();
+    format.setMaximumFractionDigits(1);
+    return Float.parseFloat(format.format(v));
   }
 }
