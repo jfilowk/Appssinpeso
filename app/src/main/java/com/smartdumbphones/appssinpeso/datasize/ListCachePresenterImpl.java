@@ -14,9 +14,9 @@ public class ListCachePresenterImpl
   }
 
   @Override public void getPackages() {
-    view.showLoading();
     Appssinpeso.getApplicationsManager().attachOnApplicationListener(this);
     Appssinpeso.getApplicationsManager().start();
+    view.showLoading();
   }
 
   @Override public void getDetailPackage() {
@@ -28,6 +28,7 @@ public class ListCachePresenterImpl
   }
 
   @Override public void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList) {
+    view.hideLoading();
     view.displayListCache(applicationInfoStructList);
   }
 

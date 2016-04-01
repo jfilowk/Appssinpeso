@@ -35,6 +35,7 @@ public class ListCache2Activity extends AppCompatActivity implements ListCacheVi
     recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
     presenter = new ListCachePresenterImpl(this);
+    presenter.getPackages();
   }
 
   @Override public void showLoading() {
@@ -43,18 +44,20 @@ public class ListCache2Activity extends AppCompatActivity implements ListCacheVi
     progressDialog.setMessage("Loading...");
     progressDialog.setCancelable(false);
     progressDialog.show();
-
-    presenter.getPackages();
   }
 
   @Override public void hideLoading() {
     progressDialog.dismiss();
   }
 
-  @Override public void displayListCache(List<ApplicationInfoStruct> applicationInfoStructList) {
-    res.clear();
-    res.addAll(applicationInfoStructList);
-    adapter.notifyDataSetChanged();
+  @Override public void displayListCache(final List<ApplicationInfoStruct> applicationInfoStructList) {
+    runOnUiThread(new Runnable() {
+      @Override public void run() {
+        res.clear();
+        res.addAll(applicationInfoStructList);
+        adapter.notifyDataSetChanged();
+      }
+    });
   }
 
   @Override public void showError(String error) {
