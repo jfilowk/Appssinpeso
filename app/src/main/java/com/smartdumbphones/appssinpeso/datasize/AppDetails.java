@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppDetails {
-  private ListenerErrorPackage listener;
   public ArrayList<ApplicationInfoStruct> res = new ArrayList<>();
 
-  public AppDetails(ListenerErrorPackage listener) {
-    this.listener = listener;
+  public AppDetails() {
   }
 
   public ArrayList<ApplicationInfoStruct> getPackages() {
@@ -30,7 +28,7 @@ public class AppDetails {
     List<PackageInfo> packs = packageManager.getInstalledPackages(0);
 
     if (packs.size() == 0) {
-      listener.onError();
+      return res;
     }
 
     for (int i = 0; i < packs.size(); i++) {

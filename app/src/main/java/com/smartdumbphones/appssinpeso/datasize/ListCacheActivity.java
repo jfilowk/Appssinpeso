@@ -82,7 +82,7 @@ public class ListCacheActivity extends Activity implements ListenerErrorPackage 
   }
 
   private void getpackageSize() {
-    cAppDetails = new AppDetails(this);
+    cAppDetails = new AppDetails();
     res.clear();
     ArrayList<ApplicationInfoStruct> packages = cAppDetails.getPackages();
     java.util.Collections.sort(packages, new Comparator<ApplicationInfoStruct>() {

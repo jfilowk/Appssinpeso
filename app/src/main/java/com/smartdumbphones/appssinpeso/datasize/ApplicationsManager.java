@@ -1,7 +1,9 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
 public interface ApplicationsManager {
-  void start(OnApplicationsListener listener);
+  void attachOnApplicationListener(OnApplicationsListener listener);
+
+  void start();
 
   void stop();
 
