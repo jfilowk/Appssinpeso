@@ -1,14 +1,13 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
-import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
-import java.util.List;
+import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 
 public interface ListCacheView {
   void showLoading();
 
   void hideLoading();
 
-  void displayListCache(List<ApplicationInfoStruct> applicationInfoStructList, float totalCacheSize);
+  void displayListCache(AllApplications allApplications);
 
   void showError(String error);
 }
