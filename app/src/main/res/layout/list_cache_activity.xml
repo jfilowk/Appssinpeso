@@ -4,42 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".datasize.ListCacheActivity"
     >
-
-  <TextView
-      android:id="@+id/lblApplicationsNum"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="Num Apps.: "
-      />
-
-
-  <TextView
-      android:id="@+id/lblApplicationsSize"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/lblApplicationsNum"
-      android:text="Total Apps. Size: "
-      />
-
-  <TextView
-      android:id="@+id/lblCacheSize"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/lblApplicationsSize"
-      android:text="Total Cache Size : "
-      />
-
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_below="@+id/lblCacheSize"
       />
 </RelativeLayout>
