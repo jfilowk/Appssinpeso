@@ -3,6 +3,7 @@ package com.smartdumbphones.appssinpeso;
 import android.app.Application;
 import com.smartdumbphones.appssinpeso.datasize.ApplicationsManager;
 import com.smartdumbphones.appssinpeso.datasize.ApplicationsManagerImpl;
+import com.smartdumbphones.appssinpeso.datasize.MainThreadImpl;
 import timber.log.Timber;
 
 public class Appssinpeso extends Application {
@@ -21,7 +22,6 @@ public class Appssinpeso extends Application {
     super.onCreate();
 
     instance = this;
-    applicationsManager = new ApplicationsManagerImpl(instance);
 
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree());
@@ -31,6 +31,9 @@ public class Appssinpeso extends Application {
   }
 
   public static ApplicationsManager getApplicationsManager() {
+    if (applicationsManager == null) {
+      applicationsManager = new ApplicationsManagerImpl(instance, new MainThreadImpl());
+    }
     return applicationsManager;
   }
 }

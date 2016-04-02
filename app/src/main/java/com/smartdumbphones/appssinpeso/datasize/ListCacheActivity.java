@@ -55,19 +55,15 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
   @Override
   public void displayListCache(final List<ApplicationInfoStruct> applicationInfoStructList,
       final AllApplications allApplications) {
-    runOnUiThread(new Runnable() {
-      @Override public void run() {
-        res.clear();
-        res.addAll(applicationInfoStructList);
-        adapter.notifyDataSetChanged();
-        lblNumApplications.setText(String.format("Num Apps.: %s",
-            String.valueOf(allApplications.getTotalNumApplications())));
-        lblApplicationsSize.setText(
-            String.format("Total Apps. Size: %sMB", allApplications.getTotalSizeApplications()));
-        lblCacheSize.setText(
-            String.format("Cache size: %sMB", String.valueOf(allApplications.getTotalSizeCache())));
-      }
-    });
+    res.clear();
+    res.addAll(applicationInfoStructList);
+    adapter.notifyDataSetChanged();
+    lblNumApplications.setText(
+        String.format("Num Apps.: %s", String.valueOf(allApplications.getTotalNumApplications())));
+    lblApplicationsSize.setText(
+        String.format("Total Apps. Size: %sMB", allApplications.getTotalSizeApplications()));
+    lblCacheSize.setText(
+        String.format("Cache size: %sMB", String.valueOf(allApplications.getTotalSizeCache())));
   }
 
   @Override protected void onDestroy() {

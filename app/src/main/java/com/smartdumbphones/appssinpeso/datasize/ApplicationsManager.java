@@ -12,7 +12,6 @@ public interface ApplicationsManager {
   void stop();
 
   interface OnApplicationsListener {
-    // TODO: 01/04/16 add object to return
 
     void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList, AllApplications allApplications);
 

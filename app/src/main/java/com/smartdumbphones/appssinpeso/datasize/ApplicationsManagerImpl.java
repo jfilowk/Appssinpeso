@@ -25,11 +25,13 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private long totalApplicationSize = 0;
   private List<ApplicationInfoStruct> listApplications;
   private List<PackageStats> listPackageStats;
+  private MainThread mainThread;
 
-  public ApplicationsManagerImpl(Context context) {
+  public ApplicationsManagerImpl(Context context, MainThread mainThread) {
     this.context = context;
     this.executorService = Executors.newSingleThreadExecutor();
     this.listPackageStats = new ArrayList<>();
+    this.mainThread = mainThread;
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -82,20 +84,28 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           }
         }
       }
-      AllApplications allApplications =
+      final AllApplications allApplications =
           new AllApplications.Builder().setTotalNumApplications(listApplications.size())
               .setTotalSizeApplications(convertToMb(totalApplicationSize))
               .setTotalSizeCache(convertToMb(totalCacheSize))
               .build();
       if (listener != null) {
-        listener.onSuccess(listApplications, allApplications);
+        mainThread.post(new Runnable() {
+          @Override public void run() {
+            listener.onSuccess(listApplications, allApplications);
+          }
+        });
       }
     }
   }
 
   private void notifyOnError() {
     if (listener != null) {
-      listener.onError();
+      mainThread.post(new Runnable() {
+        @Override public void run() {
+          listener.onError();
+        }
+      });
     }
   }
 
