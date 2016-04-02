@@ -11,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.datasize.adapters.ListApplicationAdapter;
+import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,13 +52,14 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
 
   @Override
   public void displayListCache(final List<ApplicationInfoStruct> applicationInfoStructList,
-      final float totalCacheSize) {
+      final AllApplications allApplications) {
     runOnUiThread(new Runnable() {
       @Override public void run() {
         res.clear();
         res.addAll(applicationInfoStructList);
         adapter.notifyDataSetChanged();
-        lblCacheSize.setText(String.format("Cache size: %sMB", String.valueOf(totalCacheSize)));
+        lblCacheSize.setText(
+            String.format("Cache size: %sMB", String.valueOf(allApplications.getTotalSizeCache())));
       }
     });
   }

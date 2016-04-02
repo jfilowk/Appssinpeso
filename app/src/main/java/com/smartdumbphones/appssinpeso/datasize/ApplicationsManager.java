@@ -1,5 +1,6 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
+import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ApplicationsManager {
   interface OnApplicationsListener {
     // TODO: 01/04/16 add object to return
 
-    void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList, float totalCacheSize);
+    void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList, AllApplications allApplications);
 
     void onError();
   }

@@ -1,6 +1,7 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
 import com.smartdumbphones.appssinpeso.Appssinpeso;
+import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class ListCachePresenterImpl
   }
 
   @Override public void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList,
-      float totalCacheSize) {
+      AllApplications allApplications) {
     view.hideLoading();
-    view.displayListCache(applicationInfoStructList, totalCacheSize);
+    view.displayListCache(applicationInfoStructList, allApplications);
   }
 
   @Override public void onError() {

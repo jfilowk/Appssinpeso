@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,6 +22,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private OnApplicationsListener listener;
   private Context context;
   private long totalCacheSize = 0;
+  private long totalApplicationSize = 0;
   private List<ApplicationInfoStruct> listApplications;
   private List<PackageStats> listPackageStats;
 
@@ -69,19 +71,24 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private void notifyOnSuccess() {
     if (listApplications.size() == listPackageStats.size()) {
-      float totalCacheSizeFloat = convertToMb(totalCacheSize);
       for (ApplicationInfoStruct listApplication : listApplications) {
         for (PackageStats listPackageStat : listPackageStats) {
           if (listApplication.getPname().equals(listPackageStat.packageName)) {
             addSizesApplication(listPackageStat, listApplication);
             totalCacheSize =
                 totalCacheSize + listPackageStat.cacheSize + listPackageStat.externalCacheSize;
+            totalApplicationSize = totalApplicationSize + listPackageStat.codeSize;
             break;
           }
         }
       }
+      AllApplications allApplications =
+          new AllApplications.Builder().setTotalNumApplications(listApplications.size())
+              .setTotalSizeApplications(convertToMb(totalApplicationSize))
+              .setTotalSizeCache(convertToMb(totalCacheSize))
+              .build();
       if (listener != null) {
-        listener.onSuccess(listApplications, totalCacheSizeFloat);
+        listener.onSuccess(listApplications, allApplications);
       }
     }
   }
