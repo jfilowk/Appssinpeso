@@ -45,7 +45,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, View.
 
   @Override public void goListApplications() {
     startActivity(new Intent(this, ListCacheActivity.class));
-    finish();
   }
 
   @Override public void onClick(View v) {

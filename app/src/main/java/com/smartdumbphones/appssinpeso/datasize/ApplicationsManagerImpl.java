@@ -21,16 +21,12 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private ExecutorService executorService;
   private OnApplicationsListener listener;
   private Context context;
-  private long totalCacheSize = 0;
-  private long totalApplicationSize = 0;
-  private List<ApplicationInfoStruct> listApplications;
-  private List<PackageStats> listPackageStats;
+
   private MainThread mainThread;
 
   public ApplicationsManagerImpl(Context context, MainThread mainThread) {
     this.context = context;
     this.executorService = Executors.newSingleThreadExecutor();
-    this.listPackageStats = new ArrayList<>();
     this.mainThread = mainThread;
   }
 
@@ -40,14 +36,16 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   @Override public void start() {
     if (this.listener != null) {
+
       executorService.submit(new Runnable() {
         @Override public void run() {
           AppDetails appDetails = new AppDetails();
-          listApplications = appDetails.getPackages();
+          final List<ApplicationInfoStruct> listApplications = appDetails.getPackages();
           if (listApplications.size() == 0) {
             notifyOnError();
           } else {
             sortPackagesAlpha(listApplications);
+            final List<PackageStats> listPackageStats = new ArrayList<>(listApplications.size());
             for (ApplicationInfoStruct aPackage : listApplications) {
               try {
                 PackageManager packageManager = context.getPackageManager();
@@ -57,7 +55,11 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                     new CachePackState(new CachePackState.Callback() {
                       @Override public void onSuccess(PackageStats stats) {
                         listPackageStats.add(stats);
-                        notifyOnSuccess();
+                        if (isFinishedProcess(listApplications.size(), listPackageStats.size())) {
+                          AllApplications allApplications =
+                              mergeData(listApplications, listPackageStats);
+                          notifyOnSuccess(allApplications);
+                        }
                       }
                     }));
               } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
@@ -71,31 +73,50 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     }
   }
 
-  private void notifyOnSuccess() {
-    if (listApplications.size() == listPackageStats.size()) {
-      for (ApplicationInfoStruct listApplication : listApplications) {
-        for (PackageStats listPackageStat : listPackageStats) {
-          if (listApplication.getPname().equals(listPackageStat.packageName)) {
-            addSizesApplication(listPackageStat, listApplication);
-            totalCacheSize =
-                totalCacheSize + listPackageStat.cacheSize + listPackageStat.externalCacheSize;
-            totalApplicationSize = totalApplicationSize + listPackageStat.codeSize;
-            break;
-          }
+  @Override public void stop() {
+    listener = null;
+  }
+
+  private boolean isFinishedProcess(int listApplicationsSize, int listPackageStatsSize) {
+    return listApplicationsSize == listPackageStatsSize;
+  }
+
+  private AllApplications mergeData(List<ApplicationInfoStruct> listApplications,
+      List<PackageStats> listPackageStats) {
+
+    long totalCacheSize = 0;
+    long totalApplicationSize = 0;
+    List<ApplicationInfoStruct> applicationInfoStructList =
+        new ArrayList<>(listApplications.size());
+
+    for (ApplicationInfoStruct listApplication : listApplications) {
+      for (PackageStats listPackageStat : listPackageStats) {
+        if (listApplication.getPname().equals(listPackageStat.packageName)) {
+          addSizesApplication(listPackageStat, listApplication);
+
+          applicationInfoStructList.add(listApplication);
+          totalCacheSize += listPackageStat.cacheSize + listPackageStat.externalCacheSize;
+          totalApplicationSize += listPackageStat.codeSize;
+
+          break;
         }
       }
-      final AllApplications allApplications =
-          new AllApplications.Builder().setTotalNumApplications(listApplications.size())
-              .setTotalSizeApplications(convertToMb(totalApplicationSize))
-              .setTotalSizeCache(convertToMb(totalCacheSize))
-              .build();
-      if (listener != null) {
-        mainThread.post(new Runnable() {
-          @Override public void run() {
-            listener.onSuccess(listApplications, allApplications);
-          }
-        });
-      }
+    }
+
+    return new AllApplications.Builder().setTotalNumApplications(applicationInfoStructList.size())
+        .setTotalSizeApplications(convertToMb(totalApplicationSize))
+        .setTotalSizeCache(convertToMb(totalCacheSize))
+        .setListApplications(applicationInfoStructList)
+        .build();
+  }
+
+  private void notifyOnSuccess(final AllApplications allApplications) {
+    if (listener != null) {
+      mainThread.post(new Runnable() {
+        @Override public void run() {
+          listener.onSuccess(allApplications);
+        }
+      });
     }
   }
 
@@ -115,10 +136,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         return lhs.getAppname().compareTo(rhs.getAppname());
       }
     });
-  }
-
-  @Override public void stop() {
-    listener = null;
   }
 
   private void addSizesApplication(PackageStats pStats,

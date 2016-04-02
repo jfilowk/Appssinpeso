@@ -20,6 +20,11 @@ public class ListApplicationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   private List<ApplicationInfoStruct> listApplication;
   private AllApplications allApplications;
 
+  public ListApplicationAdapter(AllApplications allApplications) {
+    this.listApplication = allApplications.getListApplications();
+    this.allApplications = allApplications;
+  }
+
   public static class RowViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.txtApplication) TextView txtNameApplication;
     @Bind(R.id.txtApplicationSize) TextView txtAppSize;
@@ -78,12 +83,6 @@ public class ListApplicationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         separator.setVisibility(View.VISIBLE);
       }
     }
-  }
-
-  public ListApplicationAdapter(List<ApplicationInfoStruct> listApplication,
-      AllApplications allApplications) {
-    this.listApplication = listApplication;
-    this.allApplications = allApplications;
   }
 
   @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

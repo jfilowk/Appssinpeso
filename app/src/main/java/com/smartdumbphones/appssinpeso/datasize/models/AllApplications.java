@@ -1,21 +1,27 @@
 package com.smartdumbphones.appssinpeso.datasize.models;
 
+import java.util.List;
+
 public class AllApplications {
+
   private int totalNumApplications = 0;
   private float totalSizeApplications = 0;
   private float totalSizeCache = 0;
+  private List<ApplicationInfoStruct> listApplications;
 
   public AllApplications(int totalNumApplications, float totalSizeApplications,
-      float totalSizeCache) {
+      float totalSizeCache, List<ApplicationInfoStruct> listApplications) {
     this.totalNumApplications = totalNumApplications;
     this.totalSizeApplications = totalSizeApplications;
     this.totalSizeCache = totalSizeCache;
+    this.listApplications = listApplications;
   }
 
   public static class Builder {
     private int totalNumApplications;
     private float totalSizeApplications;
     private float totalSizeCache;
+    private List<ApplicationInfoStruct> listApplications;
 
     public Builder setTotalNumApplications(int totalNumApplications) {
       this.totalNumApplications = totalNumApplications;
@@ -32,8 +38,14 @@ public class AllApplications {
       return this;
     }
 
+    public Builder setListApplications(List<ApplicationInfoStruct> listApplications) {
+      this.listApplications = listApplications;
+      return this;
+    }
+
     public AllApplications build() {
-      return new AllApplications(totalNumApplications, totalSizeApplications, totalSizeCache);
+      return new AllApplications(totalNumApplications, totalSizeApplications, totalSizeCache,
+          listApplications);
     }
   }
 
@@ -47,5 +59,9 @@ public class AllApplications {
 
   public float getTotalSizeCache() {
     return totalSizeCache;
+  }
+
+  public List<ApplicationInfoStruct> getListApplications() {
+    return listApplications;
   }
 }

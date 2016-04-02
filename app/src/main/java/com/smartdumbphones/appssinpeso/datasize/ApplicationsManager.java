@@ -1,8 +1,6 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
 import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
-import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
-import java.util.List;
 
 public interface ApplicationsManager {
   void attachOnApplicationListener(OnApplicationsListener listener);
@@ -13,7 +11,7 @@ public interface ApplicationsManager {
 
   interface OnApplicationsListener {
 
-    void onSuccess(List<ApplicationInfoStruct> applicationInfoStructList, AllApplications allApplications);
+    void onSuccess(AllApplications allApplications);
 
     void onError();
   }
