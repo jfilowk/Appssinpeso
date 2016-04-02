@@ -13,14 +13,14 @@ import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.List;
 
-public class ListApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
   private static final int TYPE_HEADER = 100;
   private static final int TYPE_ROW = 200;
   private List<ApplicationInfoStruct> listApplication;
   private AllApplications allApplications;
 
-  public ListApplicationAdapter(AllApplications allApplications) {
+  public ApplicationInstalledAdapter(AllApplications allApplications) {
     this.listApplication = allApplications.getListApplications();
     this.allApplications = allApplications;
   }

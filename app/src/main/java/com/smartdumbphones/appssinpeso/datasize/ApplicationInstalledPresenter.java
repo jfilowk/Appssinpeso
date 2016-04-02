@@ -1,6 +1,6 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
-public interface ListCachePresenter {
+public interface ApplicationInstalledPresenter {
   void getPackages();
 
   void getDetailPackage();

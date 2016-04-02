@@ -3,12 +3,12 @@ package com.smartdumbphones.appssinpeso.datasize;
 import com.smartdumbphones.appssinpeso.Appssinpeso;
 import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 
-public class ListCachePresenterImpl
-    implements ListCachePresenter, ApplicationsManager.OnApplicationsListener {
+public class ApplicationInstalledPresenterImpl
+    implements ApplicationInstalledPresenter, ApplicationsManager.OnApplicationsListener {
 
-  private ListCacheView view;
+  private ApplicationInstalledView view;
 
-  public ListCachePresenterImpl(ListCacheView view) {
+  public ApplicationInstalledPresenterImpl(ApplicationInstalledView view) {
     this.view = view;
   }
 

@@ -2,7 +2,7 @@ package com.smartdumbphones.appssinpeso.datasize;
 
 import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 
-public interface ListCacheView {
+public interface ApplicationInstalledView {
   void showLoading();
 
   void hideLoading();

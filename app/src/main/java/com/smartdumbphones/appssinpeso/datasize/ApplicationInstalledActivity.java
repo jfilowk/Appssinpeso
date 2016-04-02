@@ -10,14 +10,15 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
-import com.smartdumbphones.appssinpeso.datasize.adapters.ListApplicationAdapter;
+import com.smartdumbphones.appssinpeso.datasize.adapters.ApplicationInstalledAdapter;
 import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 
-public class ListCacheActivity extends AppCompatActivity implements ListCacheView {
+public class ApplicationInstalledActivity extends AppCompatActivity implements
+    ApplicationInstalledView {
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
   private ProgressDialog progressDialog;
-  private ListApplicationAdapter adapter;
-  private ListCachePresenter presenter;
+  private ApplicationInstalledAdapter adapter;
+  private ApplicationInstalledPresenter presenter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -30,7 +31,7 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
 
     initProgressDialog();
 
-    presenter = new ListCachePresenterImpl(this);
+    presenter = new ApplicationInstalledPresenterImpl(this);
     presenter.getPackages();
   }
 
@@ -53,7 +54,7 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
   }
 
   @Override public void displayListCache(final AllApplications allApplications) {
-    adapter = new ListApplicationAdapter(allApplications);
+    adapter = new ApplicationInstalledAdapter(allApplications);
     recyclerList.setAdapter(adapter);
     recyclerList.setLayoutManager(new LinearLayoutManager(this));
   }
