@@ -12,11 +12,29 @@
     >
 
   <TextView
+      android:id="@+id/lblApplicationsNum"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="Num Apps.: "
+      />
+
+
+  <TextView
+      android:id="@+id/lblApplicationsSize"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/lblApplicationsNum"
+      android:text="Total Apps. Size: "
+      />
+
+  <TextView
       android:id="@+id/lblCacheSize"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="Cache Size : "
+      android:layout_below="@+id/lblApplicationsSize"
+      android:text="Total Cache Size : "
       />
+
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_list"

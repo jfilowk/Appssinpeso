@@ -18,6 +18,8 @@ import java.util.List;
 
 public class ListCacheActivity extends AppCompatActivity implements ListCacheView {
 
+  @Bind(R.id.lblApplicationsNum) TextView lblNumApplications;
+  @Bind(R.id.lblApplicationsSize) TextView lblApplicationsSize;
   @Bind(R.id.lblCacheSize) TextView lblCacheSize;
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
   private ProgressDialog progressDialog;
@@ -58,6 +60,10 @@ public class ListCacheActivity extends AppCompatActivity implements ListCacheVie
         res.clear();
         res.addAll(applicationInfoStructList);
         adapter.notifyDataSetChanged();
+        lblNumApplications.setText(String.format("Num Apps.: %s",
+            String.valueOf(allApplications.getTotalNumApplications())));
+        lblApplicationsSize.setText(
+            String.format("Total Apps. Size: %sMB", allApplications.getTotalSizeApplications()));
         lblCacheSize.setText(
             String.format("Cache size: %sMB", String.valueOf(allApplications.getTotalSizeCache())));
       }
