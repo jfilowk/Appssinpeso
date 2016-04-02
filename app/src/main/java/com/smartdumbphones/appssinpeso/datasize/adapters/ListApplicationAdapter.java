@@ -56,6 +56,7 @@ public class ListApplicationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Bind(R.id.lblHeaderName) TextView lblHeaderName;
     @Bind(R.id.lblHeaderValue) TextView lblHeaderSize;
+    @Bind(R.id.separator) View separator;
 
     public HeaderViewHolder(View itemView) {
       super(itemView);
@@ -66,12 +67,15 @@ public class ListApplicationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
       if (position == ItemTypes.HEADER_NUM.getValue()) {
         lblHeaderName.setText("Num. Applications");
         lblHeaderSize.setText(String.valueOf(allApplications.getTotalNumApplications()));
+        separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_ALL_APPLICATIONS.getValue()) {
         lblHeaderName.setText("Total Applications");
-        lblHeaderSize.setText(allApplications.getTotalSizeApplications() + "MB");
+        lblHeaderSize.setText(allApplications.getTotalSizeApplications() + " MB");
+        separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_CACHE.getValue()) {
         lblHeaderName.setText("Total Cache");
-        lblHeaderSize.setText(allApplications.getTotalSizeCache() + "MB");
+        lblHeaderSize.setText(allApplications.getTotalSizeCache() + " MB");
+        separator.setVisibility(View.VISIBLE);
       }
     }
   }
