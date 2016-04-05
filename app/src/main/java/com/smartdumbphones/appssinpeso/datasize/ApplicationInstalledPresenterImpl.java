@@ -7,14 +7,17 @@ public class ApplicationInstalledPresenterImpl
     implements ApplicationInstalledPresenter, ApplicationsManager.OnApplicationsListener {
 
   private ApplicationInstalledView view;
+  private final ApplicationsManager applicationsManager;
 
-  public ApplicationInstalledPresenterImpl(ApplicationInstalledView view) {
+  public ApplicationInstalledPresenterImpl(ApplicationInstalledView view,
+      ApplicationsManager applicationsManager) {
     this.view = view;
+    this.applicationsManager = applicationsManager;
   }
 
   @Override public void getPackages() {
-    Appssinpeso.getApplicationsManager().attachOnApplicationListener(this);
-    Appssinpeso.getApplicationsManager().start();
+    this.applicationsManager.attachOnApplicationListener(this);
+    this.applicationsManager.start();
     view.showLoading();
   }
 
