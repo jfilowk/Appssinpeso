@@ -14,19 +14,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import javax.inject.Inject;
 
 public class ApplicationsManagerImpl implements ApplicationsManager {
 
-  private ExecutorService executorService;
+  private final ExecutorService executorService;
+  private final Context context;
+  private final MainThread mainThread;
+
   private OnApplicationsListener listener;
-  private Context context;
 
-  private MainThread mainThread;
-
-  public ApplicationsManagerImpl(Context context, MainThread mainThread) {
+  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread,
+      ExecutorService executorService) {
     this.context = context;
-    this.executorService = Executors.newSingleThreadExecutor();
+    this.executorService = executorService;
     this.mainThread = mainThread;
   }
 
