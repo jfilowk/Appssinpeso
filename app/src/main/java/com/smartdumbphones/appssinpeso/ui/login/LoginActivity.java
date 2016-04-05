@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.login;
+package com.smartdumbphones.appssinpeso.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
-import com.smartdumbphones.appssinpeso.datasize.ApplicationInstalledActivity;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerLoginComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.LoginComponent;
+import com.smartdumbphones.appssinpeso.ui.device_applications.DeviceApplicationInstalledActivity;
 import javax.inject.Inject;
 
 public class LoginActivity extends BaseActivity implements LoginView, View.OnClickListener {
@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnCli
   }
 
   @Override public void goListApplications() {
-    startActivity(new Intent(this, ApplicationInstalledActivity.class));
+    startActivity(new Intent(this, DeviceApplicationInstalledActivity.class));
   }
 
   @Override public void onClick(View v) {

@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasize.models;
+package com.smartdumbphones.appssinpeso.models;
 
 import java.util.List;
 

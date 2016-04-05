@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.ui.device_applications;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -10,20 +10,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
-import com.smartdumbphones.appssinpeso.datasize.adapters.ApplicationInstalledAdapter;
-import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerInstalledComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.InstalledComponent;
+import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.ui.device_applications.adapters.ApplicationInstalledAdapter;
 import javax.inject.Inject;
 
-public class ApplicationInstalledActivity extends BaseActivity implements ApplicationInstalledView {
+public class DeviceApplicationInstalledActivity extends BaseActivity
+    implements ApplicationInstalledView {
 
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
 
   private ProgressDialog progressDialog;
   private ApplicationInstalledAdapter adapter;
 
-  @Inject ApplicationInstalledPresenter presenter;
+  @Inject DeviceApplicationInstalledPresenter presenter;
 
   private InstalledComponent component;
 

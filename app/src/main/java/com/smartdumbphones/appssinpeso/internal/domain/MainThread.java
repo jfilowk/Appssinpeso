@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.internal.domain;
 
 public interface MainThread {
   void post(Runnable runnable);

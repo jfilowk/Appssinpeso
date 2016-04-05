@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.login;
+package com.smartdumbphones.appssinpeso.ui.login;
 
 import javax.inject.Inject;
 

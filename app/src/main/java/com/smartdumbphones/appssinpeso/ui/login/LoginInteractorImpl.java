@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.login;
+package com.smartdumbphones.appssinpeso.ui.login;
 
 import android.os.Handler;
 import android.text.TextUtils;

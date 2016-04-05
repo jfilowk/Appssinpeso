@@ -1,11 +1,13 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.internal.manager;
 
 import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
-import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
-import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
+import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
+import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
+import com.smartdumbphones.appssinpeso.ui.device_applications.AppDetails;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;

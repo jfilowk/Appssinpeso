@@ -1,6 +1,6 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.ui.device_applications;
 
-public interface ApplicationInstalledPresenter {
+public interface DeviceApplicationInstalledPresenter {
   void getPackages();
 
   void getDetailPackage();

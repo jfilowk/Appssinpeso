@@ -1,6 +1,6 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.ui.device_applications;
 
-import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.AllApplications;
 
 public interface ApplicationInstalledView {
   void showLoading();

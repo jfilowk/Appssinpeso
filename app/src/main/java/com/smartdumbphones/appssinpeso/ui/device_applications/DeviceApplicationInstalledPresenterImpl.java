@@ -1,15 +1,16 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.ui.device_applications;
 
-import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
+import com.smartdumbphones.appssinpeso.internal.manager.ApplicationsManager;
+import com.smartdumbphones.appssinpeso.models.AllApplications;
 import javax.inject.Inject;
 
-public class ApplicationInstalledPresenterImpl
-    implements ApplicationInstalledPresenter, ApplicationsManager.OnApplicationsListener {
+public class DeviceApplicationInstalledPresenterImpl
+    implements DeviceApplicationInstalledPresenter, ApplicationsManager.OnApplicationsListener {
 
   private ApplicationInstalledView view;
   private ApplicationsManager applicationsManager;
 
-  @Inject public ApplicationInstalledPresenterImpl(ApplicationsManager applicationsManager) {
+  @Inject public DeviceApplicationInstalledPresenterImpl(ApplicationsManager applicationsManager) {
     this.applicationsManager = applicationsManager;
   }
 

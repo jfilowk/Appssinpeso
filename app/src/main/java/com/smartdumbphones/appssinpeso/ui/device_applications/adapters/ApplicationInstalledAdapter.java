@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasize.adapters;
+package com.smartdumbphones.appssinpeso.ui.device_applications.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
-import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
-import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
+import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import java.util.List;
 
 public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasize;
+package com.smartdumbphones.appssinpeso.internal.manager;
 
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageStats;
