@@ -3,7 +3,9 @@ package com.smartdumbphones.appssinpeso.modules;
 import android.content.Context;
 import com.smartdumbphones.appssinpeso.Appssinpeso;
 import com.smartdumbphones.appssinpeso.datasize.ApplicationsManager;
+import com.smartdumbphones.appssinpeso.datasize.ApplicationsManagerImpl;
 import com.smartdumbphones.appssinpeso.datasize.MainThread;
+import com.smartdumbphones.appssinpeso.datasize.MainThreadImpl;
 import dagger.Module;
 import dagger.Provides;
 import java.util.concurrent.ExecutorService;
@@ -25,12 +27,12 @@ import javax.inject.Singleton;
     return Executors.newSingleThreadExecutor();
   }
 
-  @Provides @Singleton MainThread provideMainThread(MainThread mainThread) {
+  @Provides @Singleton MainThread provideMainThread(MainThreadImpl mainThread) {
     return mainThread;
   }
 
   @Provides @Singleton ApplicationsManager provideApplicationManager(
-      ApplicationsManager applicationsManager) {
+      ApplicationsManagerImpl applicationsManager) {
     return applicationsManager;
   }
 }

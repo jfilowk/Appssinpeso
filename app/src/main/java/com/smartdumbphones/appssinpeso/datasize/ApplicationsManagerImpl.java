@@ -24,7 +24,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private OnApplicationsListener listener;
 
-  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread,
+  @Inject
+  public ApplicationsManagerImpl(Context context, MainThread mainThread,
       ExecutorService executorService) {
     this.context = context;
     this.executorService = executorService;
