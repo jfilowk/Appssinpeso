@@ -1,16 +1,19 @@
 package com.smartdumbphones.appssinpeso.datasize;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import com.smartdumbphones.appssinpeso.Appssinpeso;
 import com.smartdumbphones.appssinpeso.datasize.models.ApplicationInfoStruct;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 public class AppDetails {
   public ArrayList<ApplicationInfoStruct> res = new ArrayList<>();
+  private Context context;
 
-  public AppDetails() {
+  @Inject public AppDetails(Context context) {
+    this.context = context;
   }
 
   public ArrayList<ApplicationInfoStruct> getPackages() {
@@ -19,7 +22,7 @@ public class AppDetails {
 
   private ArrayList<ApplicationInfoStruct> getInstalledApps(boolean getSysPackages) {
 
-    PackageManager packageManager = Appssinpeso.getInstance().getPackageManager();
+    PackageManager packageManager = context.getPackageManager();
     List<PackageInfo> packs = packageManager.getInstalledPackages(0);
 
     if (packs.size() == 0) {

@@ -1,19 +1,24 @@
 package com.smartdumbphones.appssinpeso.login;
 
+import javax.inject.Inject;
+
 public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
   private static String TAG = "LoginPresenter";
   // Instance of interfaces
-  private LoginView loginView;
   private LoginInteractor loginInteractor;
+  private LoginView loginView;
 
-  public LoginPresenterImpl(LoginView loginView) {
-    this.loginView = loginView;
-    this.loginInteractor = new LoginInteractorImpl();
+  @Inject public LoginPresenterImpl(LoginInteractor loginInteractor) {
+    this.loginInteractor = loginInteractor;
   }
 
   @Override public void validateCredentials(String email) {
     loginView.showProgress();
     loginInteractor.login(email, this);
+  }
+
+  @Override public void attachView(LoginView view) {
+    this.loginView = view;
   }
 
   @Override public void onErrorCredentials() {

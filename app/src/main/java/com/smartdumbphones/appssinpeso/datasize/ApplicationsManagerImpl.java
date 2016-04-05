@@ -15,17 +15,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.inject.Inject;
 
 public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private ExecutorService executorService;
   private OnApplicationsListener listener;
   private Context context;
+  private AppDetails appDetails;
 
   private MainThread mainThread;
 
-  public ApplicationsManagerImpl(Context context, MainThread mainThread) {
+  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread, AppDetails appDetails) {
     this.context = context;
+    this.appDetails = appDetails;
     this.executorService = Executors.newSingleThreadExecutor();
     this.mainThread = mainThread;
   }
@@ -39,7 +42,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
       executorService.submit(new Runnable() {
         @Override public void run() {
-          AppDetails appDetails = new AppDetails();
           final List<ApplicationInfoStruct> listApplications = appDetails.getPackages();
           if (listApplications.size() == 0) {
             notifyOnError();

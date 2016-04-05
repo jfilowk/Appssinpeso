@@ -6,4 +6,7 @@ public interface ApplicationInstalledPresenter {
   void getDetailPackage();
 
   void onDestroy();
+
+  void attachView(ApplicationInstalledView view);
+
 }

@@ -2,7 +2,6 @@ package com.smartdumbphones.appssinpeso.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,25 +9,46 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.smartdumbphones.appssinpeso.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.datasize.ApplicationInstalledActivity;
+import com.smartdumbphones.appssinpeso.internal.di.component.DaggerLoginComponent;
+import com.smartdumbphones.appssinpeso.internal.di.component.LoginComponent;
+import javax.inject.Inject;
 
-public class LoginActivity extends AppCompatActivity implements LoginView, View.OnClickListener {
+public class LoginActivity extends BaseActivity implements LoginView, View.OnClickListener {
 
   @Bind(R.id.analyze_button) Button btnAnalyze;
   @Bind(R.id.email_login_text) EditText txtEmailLogin;
   @Bind(R.id.progressBar) ProgressBar progressBar;
-  private LoginPresenter presenter;
+
+  @Inject LoginPresenter presenter;
+
+  private LoginComponent component;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_activity);
+
+    initializeInjectors();
+
+    presenter.attachView(this);
+
     ButterKnife.bind(this);
     txtEmailLogin.setText("hola@hola.com");
     btnAnalyze.setOnClickListener(this);
     progressBar.setVisibility(View.GONE);
+  }
 
-    presenter = new LoginPresenterImpl(this);
+  private void initializeInjectors() {
+    if (component == null) {
+      component = DaggerLoginComponent.builder()
+          .applicationComponent(getApplicationComponent())
+          .activityModule(getActivityModule())
+          .build();
+    }
+
+    component.inject(this);
   }
 
   @Override public void showProgress() {

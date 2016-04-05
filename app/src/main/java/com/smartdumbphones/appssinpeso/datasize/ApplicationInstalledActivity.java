@@ -2,23 +2,30 @@ package com.smartdumbphones.appssinpeso.datasize;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.smartdumbphones.appssinpeso.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.datasize.adapters.ApplicationInstalledAdapter;
 import com.smartdumbphones.appssinpeso.datasize.models.AllApplications;
+import com.smartdumbphones.appssinpeso.internal.di.component.DaggerInstalledComponent;
+import com.smartdumbphones.appssinpeso.internal.di.component.InstalledComponent;
+import javax.inject.Inject;
 
-public class ApplicationInstalledActivity extends AppCompatActivity implements
-    ApplicationInstalledView {
+public class ApplicationInstalledActivity extends BaseActivity implements ApplicationInstalledView {
+
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
+
   private ProgressDialog progressDialog;
   private ApplicationInstalledAdapter adapter;
-  private ApplicationInstalledPresenter presenter;
+
+  @Inject ApplicationInstalledPresenter presenter;
+
+  private InstalledComponent component;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -30,9 +37,21 @@ public class ApplicationInstalledActivity extends AppCompatActivity implements
     }
 
     initProgressDialog();
+    initializeInjectors();
 
-    presenter = new ApplicationInstalledPresenterImpl(this);
+    presenter.attachView(this);
     presenter.getPackages();
+  }
+
+  private void initializeInjectors() {
+    if (component == null) {
+      component = DaggerInstalledComponent.builder()
+          .applicationComponent(getApplicationComponent())
+          .activityModule(getActivityModule())
+          .build();
+    }
+
+    component.inject(this);
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
