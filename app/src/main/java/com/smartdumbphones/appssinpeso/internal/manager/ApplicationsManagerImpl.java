@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 public class ApplicationsManagerImpl implements ApplicationsManager {
@@ -25,13 +24,14 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private OnApplicationsListener listener;
   private Context context;
   private AppDetails appDetails;
+  private PackageManager packageManager;
 
   private MainThread mainThread;
 
-  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread, AppDetails appDetails) {
+  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread, AppDetails appDetails, ExecutorService executorService, PackageManager packageManager) {
     this.context = context;
     this.appDetails = appDetails;
-    this.executorService = Executors.newSingleThreadExecutor();
+    this.executorService = executorService;
     this.mainThread = mainThread;
   }
 
