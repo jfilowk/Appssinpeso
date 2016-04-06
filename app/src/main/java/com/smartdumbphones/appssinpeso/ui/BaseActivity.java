@@ -1,7 +1,8 @@
-package com.smartdumbphones.appssinpeso;
+package com.smartdumbphones.appssinpeso.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import com.smartdumbphones.appssinpeso.Appssinpeso;
 import com.smartdumbphones.appssinpeso.internal.di.component.ApplicationComponent;
 import com.smartdumbphones.appssinpeso.internal.di.module.ActivityModule;
 

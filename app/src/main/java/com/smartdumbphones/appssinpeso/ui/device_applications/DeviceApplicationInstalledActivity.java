@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.smartdumbphones.appssinpeso.BaseActivity;
+import com.smartdumbphones.appssinpeso.ui.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerInstalledComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.InstalledComponent;

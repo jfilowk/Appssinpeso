@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.smartdumbphones.appssinpeso.BaseActivity;
+import com.smartdumbphones.appssinpeso.ui.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerLoginComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.LoginComponent;
