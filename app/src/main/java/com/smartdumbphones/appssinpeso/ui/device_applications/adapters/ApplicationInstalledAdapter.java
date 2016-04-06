@@ -38,21 +38,22 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       ButterKnife.bind(this, itemView);
     }
 
+    // TODO: Check why data is not sum correctly. Return KB if its possible
     public void bindApplicationInfo(ApplicationInfoStruct applicationInfoStruct) {
       txtNameApplication.setText(applicationInfoStruct.getAppname());
-      txtAppSize.setText("App: " + String.valueOf(applicationInfoStruct.getApkSize()) + "MB");
+      txtAppSize.setText("App: " + String.valueOf(applicationInfoStruct.getApkSize()) + " MB");
       if (applicationInfoStruct.getCacheSize() == 0.0) {
         txtCacheSize.setText("Cache: -");
       } else {
         txtCacheSize.setText(
-            "Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + "MB");
+            "Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + " MB");
       }
       if (applicationInfoStruct.getDataSize() == 0.0) {
         txtDataSize.setText("Data: -");
       } else {
-        txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + "MB");
+        txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + " MB");
       }
-      txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()) + "MB");
+      txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()) + " MB");
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
   }
@@ -70,15 +71,15 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void bindAllApplications(AllApplications allApplications, int position) {
       if (position == ItemTypes.HEADER_NUM.getValue()) {
-        lblHeaderName.setText("Num. Applications");
+        lblHeaderName.setText(R.string.num_applications_header);
         lblHeaderSize.setText(String.valueOf(allApplications.getTotalNumApplications()));
         separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_ALL_APPLICATIONS.getValue()) {
-        lblHeaderName.setText("Total Applications");
+        lblHeaderName.setText(R.string.total_applications_header);
         lblHeaderSize.setText(allApplications.getTotalSizeApplications() + " MB");
         separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_CACHE.getValue()) {
-        lblHeaderName.setText("Total Cache");
+        lblHeaderName.setText(R.string.total_cache_header);
         lblHeaderSize.setText(allApplications.getTotalSizeCache() + " MB");
         separator.setVisibility(View.VISIBLE);
       }

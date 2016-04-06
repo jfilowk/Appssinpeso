@@ -37,6 +37,7 @@ public class LoginActivity extends BaseActivity
     presenter.attachView(this);
 
     ButterKnife.bind(this);
+    // TODO: Remove when release
     txtEmailLogin.setText("hola@hola.com");
     btnAnalyze.setOnClickListener(this);
   }
