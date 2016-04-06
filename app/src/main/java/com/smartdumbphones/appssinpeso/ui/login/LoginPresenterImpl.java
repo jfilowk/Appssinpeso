@@ -12,13 +12,13 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
     this.loginInteractor = loginInteractor;
   }
 
+  @Override public void attachView(LoginView view) {
+    this.loginView = view;
+  }
+
   @Override public void validateCredentials(String email) {
     loginView.showProgress();
     loginInteractor.login(email, this);
-  }
-
-  @Override public void attachView(LoginView view) {
-    this.loginView = view;
   }
 
   @Override public void onErrorCredentials() {
