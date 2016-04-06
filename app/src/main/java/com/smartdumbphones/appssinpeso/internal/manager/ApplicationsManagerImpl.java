@@ -39,6 +39,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     this.listener = listener;
   }
 
+  // TODO: Add size photos
   @Override public void start() {
     if (this.listener != null) {
 

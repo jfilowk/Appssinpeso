@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
     android:orientation="horizontal"
+    android:padding="10dp"
     >
 
   <ImageView
       android:id="@+id/iconApplication"
       android:layout_width="40dp"
       android:layout_height="40dp"
-      android:contentDescription="Icon application"
+      android:contentDescription="@string/icon_application"
       android:paddingRight="10dp"
       />
 
@@ -24,17 +24,16 @@
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
+        android:weightSum="4"
         >
 
       <TextView
           android:id="@+id/txtApplication"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:text="Name Application"
-          android:textStyle="bold"
-
+          android:layout_weight="3"
+          android:text="@string/name_application_list"
+          android:textColor="@color/colorPrimary"
           />
 
       <TextView
@@ -42,8 +41,9 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="right"
-          android:text="100 MB"
+          android:gravity="end"
+          android:text="@string/amount_storage_example_item"
+          android:textColor="@color/colorAccent"
           />
     </LinearLayout>
 
@@ -60,7 +60,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="App: 14MB"
+          android:text="@string/example_app_item"
+          android:textColor="@color/colorPrimaryDark"
           />
 
       <TextView
@@ -68,7 +69,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="Cache: 14MB"
+          android:text="@string/example_cache_item"
+          android:textColor="@color/colorPrimaryDark"
           />
 
       <TextView
@@ -76,7 +78,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="Data: 14MB"
+          android:text="@string/example_data_item"
+          android:textColor="@color/colorPrimaryDark"
           />
     </LinearLayout>
   </LinearLayout>

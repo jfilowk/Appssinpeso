@@ -4,4 +4,13 @@
   <string name="control_weight_login">Control the weight of your smartphone</string>
   <string name="email_login">Email</string>
   <string name="analyze_login">Analyze</string>
+  <string name="icon_application">Icon application</string>
+  <string name="name_application_list">Name Application</string>
+  <string name="num_applications_header">Num. Applications</string>
+  <string name="total_applications_header">Total Applications</string>
+  <string name="total_cache_header">Total Cache</string>
+  <string name="example_app_item">App: 14 MB</string>
+  <string name="example_cache_item">Cache: 14 MB</string>
+  <string name="example_data_item">Data: 14 MB</string>
+  <string name="amount_storage_example_item">14 MB</string>
 </resources>

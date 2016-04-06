@@ -7,7 +7,7 @@ import javax.inject.Inject;
 public class DeviceApplicationInstalledPresenterImpl
     implements DeviceApplicationInstalledPresenter, ApplicationsManager.OnApplicationsListener {
 
-  private ApplicationInstalledView view;
+  private DeviceApplicationInstalledView view;
   private ApplicationsManager applicationsManager;
 
   @Inject public DeviceApplicationInstalledPresenterImpl(ApplicationsManager applicationsManager) {
@@ -28,7 +28,7 @@ public class DeviceApplicationInstalledPresenterImpl
     applicationsManager.stop();
   }
 
-  @Override public void attachView(ApplicationInstalledView view) {
+  @Override public void attachView(DeviceApplicationInstalledView view) {
     this.view = view;
   }
 
