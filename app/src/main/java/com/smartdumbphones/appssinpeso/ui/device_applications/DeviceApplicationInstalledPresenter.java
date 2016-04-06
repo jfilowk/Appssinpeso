@@ -1,5 +1,7 @@
 package com.smartdumbphones.appssinpeso.ui.device_applications;
 
+import com.smartdumbphones.appssinpeso.models.AllApplications;
+
 public interface DeviceApplicationInstalledPresenter {
   void getPackages();
 
@@ -7,6 +9,15 @@ public interface DeviceApplicationInstalledPresenter {
 
   void onDestroy();
 
-  void attachView(ApplicationInstalledView view);
+  void attachView(DeviceApplicationInstalledView view);
 
+  interface DeviceApplicationInstalledView {
+    void showLoading();
+
+    void hideLoading();
+
+    void displayListCache(AllApplications allApplications);
+
+    void showError(String error);
+  }
 }

@@ -8,16 +8,16 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.smartdumbphones.appssinpeso.ui.BaseActivity;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerInstalledComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.InstalledComponent;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.ui.BaseActivity;
 import com.smartdumbphones.appssinpeso.ui.device_applications.adapters.ApplicationInstalledAdapter;
 import javax.inject.Inject;
 
 public class DeviceApplicationInstalledActivity extends BaseActivity
-    implements ApplicationInstalledView {
+    implements DeviceApplicationInstalledPresenter.DeviceApplicationInstalledView {
 
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
 
