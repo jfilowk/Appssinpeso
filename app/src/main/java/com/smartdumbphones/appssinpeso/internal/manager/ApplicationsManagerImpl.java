@@ -1,6 +1,5 @@
 package com.smartdumbphones.appssinpeso.internal.manager;
 
-import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
@@ -16,23 +15,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private ExecutorService executorService;
   private OnApplicationsListener listener;
-  private Context context;
   private AppDetails appDetails;
+  private PackageManager packageManager;
 
   private MainThread mainThread;
 
-  @Inject public ApplicationsManagerImpl(Context context, MainThread mainThread, AppDetails appDetails) {
-    this.context = context;
+  @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
+      ExecutorService executorService, PackageManager packageManager) {
     this.appDetails = appDetails;
-    this.executorService = Executors.newSingleThreadExecutor();
+    this.executorService = executorService;
     this.mainThread = mainThread;
+    this.packageManager = packageManager;
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -53,7 +52,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
             final List<PackageStats> listPackageStats = new ArrayList<>(listApplications.size());
             for (ApplicationInfoStruct aPackage : listApplications) {
               try {
-                PackageManager packageManager = context.getPackageManager();
                 Method getPackageSizeInfo = packageManager.getClass()
                     .getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
                 getPackageSizeInfo.invoke(packageManager, aPackage.getPname(),
