@@ -7,6 +7,8 @@ import com.smartdumbphones.appssinpeso.internal.manager.ApplicationsManager;
 import com.smartdumbphones.appssinpeso.internal.manager.ApplicationsManagerImpl;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThreadImpl;
+import com.smartdumbphones.appssinpeso.ui.login.LoginInteractor;
+import com.smartdumbphones.appssinpeso.ui.login.LoginInteractorImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -34,5 +36,9 @@ import javax.inject.Singleton;
 
   @Provides @Singleton AppDetails provideAppDetails(Context context) {
     return new AppDetails(context);
+  }
+
+  @Provides LoginInteractor provideLoginInteractor(LoginInteractorImpl interactor) {
+    return interactor;
   }
 }
