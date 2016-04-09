@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.appdetails;
+package com.smartdumbphones.appssinpeso.login;
 
 import com.smartdumbphones.appssinpeso.ui.login.LoginInteractor;
 import com.smartdumbphones.appssinpeso.ui.login.LoginPresenter;

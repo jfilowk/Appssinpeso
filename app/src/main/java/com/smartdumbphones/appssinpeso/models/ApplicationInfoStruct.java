@@ -16,6 +16,19 @@ public class ApplicationInfoStruct {
   public ApplicationInfoStruct() {
   }
 
+  public ApplicationInfoStruct(String appname, String pname, Drawable icon, String datadir,
+      float apkSize, float cacheSize, float dataSize, float totalSize, boolean isSystem) {
+    this.appname = appname;
+    this.pname = pname;
+    this.icon = icon;
+    this.datadir = datadir;
+    this.apkSize = apkSize;
+    this.cacheSize = cacheSize;
+    this.dataSize = dataSize;
+    this.totalSize = totalSize;
+    this.isSystem = isSystem;
+  }
+
   public String getAppname() {
     return appname;
   }
