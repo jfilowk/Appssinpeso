@@ -29,9 +29,6 @@ public class LoginActivity extends BaseActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_activity);
 
-    // TODO: Improve it
-    getSupportActionBar().hide();
-
     initializeInjectors();
 
     presenter.attachView(this);

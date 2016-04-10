@@ -1,6 +1,7 @@
 package com.smartdumbphones.appssinpeso.ui.device_applications;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   private ApplicationInstalledAdapter adapter;
 
   @Inject DeviceApplicationInstalledPresenter presenter;
+  @Inject Context context;
 
   private InstalledComponent component;
   private AllApplications allApplications;
@@ -106,7 +108,7 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   @Override public void displayListCache(final AllApplications allApplications) {
     this.allApplications = allApplications;
     if (adapter == null) {
-      adapter = new ApplicationInstalledAdapter(this.allApplications);
+      adapter = new ApplicationInstalledAdapter(context, this.allApplications);
       recyclerList.setAdapter(adapter);
     } else {
       adapter.refreshData(this.allApplications);

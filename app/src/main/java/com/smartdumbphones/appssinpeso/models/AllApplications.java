@@ -5,12 +5,12 @@ import java.util.List;
 public class AllApplications {
 
   private int totalNumApplications = 0;
-  private float totalSizeApplications = 0;
-  private float totalSizeCache = 0;
+  private long totalSizeApplications = 0;
+  private long totalSizeCache = 0;
   private List<ApplicationInfoStruct> listApplications;
 
-  public AllApplications(int totalNumApplications, float totalSizeApplications,
-      float totalSizeCache, List<ApplicationInfoStruct> listApplications) {
+  public AllApplications(int totalNumApplications, long totalSizeApplications,
+      long totalSizeCache, List<ApplicationInfoStruct> listApplications) {
     this.totalNumApplications = totalNumApplications;
     this.totalSizeApplications = totalSizeApplications;
     this.totalSizeCache = totalSizeCache;
@@ -23,8 +23,8 @@ public class AllApplications {
 
   public static class Builder {
     private int totalNumApplications;
-    private float totalSizeApplications;
-    private float totalSizeCache;
+    private long totalSizeApplications;
+    private long totalSizeCache;
     private List<ApplicationInfoStruct> listApplications;
 
     public Builder setTotalNumApplications(int totalNumApplications) {
@@ -32,12 +32,12 @@ public class AllApplications {
       return this;
     }
 
-    public Builder setTotalSizeApplications(float totalSizeApplications) {
+    public Builder setTotalSizeApplications(long totalSizeApplications) {
       this.totalSizeApplications = totalSizeApplications;
       return this;
     }
 
-    public Builder setTotalSizeCache(float totalSizeCache) {
+    public Builder setTotalSizeCache(long totalSizeCache) {
       this.totalSizeCache = totalSizeCache;
       return this;
     }
@@ -57,11 +57,11 @@ public class AllApplications {
     return totalNumApplications;
   }
 
-  public float getTotalSizeApplications() {
+  public long getTotalSizeApplications() {
     return totalSizeApplications;
   }
 
-  public float getTotalSizeCache() {
+  public long getTotalSizeCache() {
     return totalSizeCache;
   }
 
