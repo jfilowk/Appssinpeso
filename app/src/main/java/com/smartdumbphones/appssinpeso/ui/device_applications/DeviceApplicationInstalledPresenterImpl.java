@@ -21,12 +21,12 @@ public class DeviceApplicationInstalledPresenterImpl
   }
 
   @Override public void getDetailPackage() {
-    applicationsManager.start(false);
-    view.showLoading();
+
   }
 
   @Override public void filterSystemPackage() {
-
+    applicationsManager.start(false);
+    view.showLoading();
   }
 
   @Override public void onDestroy() {

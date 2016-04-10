@@ -28,19 +28,23 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   @Inject DeviceApplicationInstalledPresenter presenter;
 
   private InstalledComponent component;
+  private AllApplications allApplications;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.list_cache_activity);
     ButterKnife.bind(this);
 
+    this.allApplications = new AllApplications();
+
+    // TODO: volver a mostrar las aplicaciones del sistema 
+    adapter = new ApplicationInstalledAdapter(this.allApplications);
+    recyclerList.setAdapter(adapter);
+    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    adapter = new ApplicationInstalledAdapter(new AllApplications());
-    recyclerList.setAdapter(adapter);
-    recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
     initProgressDialog();
     initializeInjectors();
@@ -87,7 +91,9 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   }
 
   @Override public void displayListCache(final AllApplications allApplications) {
-
+    this.allApplications = allApplications;
+    adapter = new ApplicationInstalledAdapter(this.allApplications);
+    recyclerList.setAdapter(adapter);
   }
 
   @Override protected void onDestroy() {

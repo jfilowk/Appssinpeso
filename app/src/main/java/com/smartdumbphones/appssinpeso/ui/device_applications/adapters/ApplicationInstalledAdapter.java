@@ -108,7 +108,7 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
   }
 
   @Override public int getItemCount() {
-    return listApplication == null && allApplications == null ? 0
+    return listApplication == null || allApplications == null ? 0
         : listApplication.size() + ItemTypes.values().length;
   }
 
