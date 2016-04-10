@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertTrue;
 
 public class DeviceApplicationInstalledPresenterTest {
 
@@ -58,6 +59,7 @@ public class DeviceApplicationInstalledPresenterTest {
     verify(applicationsManager).attachOnApplicationListener(
         applicationsListenerArgumentCaptor.capture());
     applicationsListenerArgumentCaptor.getValue().onSuccess(build);
+    assertTrue(build.getListApplications().size() == 3);
     verify(view).displayListCache(build);
     verify(view).hideLoading();
   }
