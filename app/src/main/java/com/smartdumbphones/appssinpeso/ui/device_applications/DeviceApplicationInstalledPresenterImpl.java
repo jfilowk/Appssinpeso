@@ -16,12 +16,17 @@ public class DeviceApplicationInstalledPresenterImpl
 
   @Override public void getPackages() {
     applicationsManager.attachOnApplicationListener(this);
-    applicationsManager.start();
+    applicationsManager.start(true);
     view.showLoading();
   }
 
   @Override public void getDetailPackage() {
 
+  }
+
+  @Override public void filterSystemPackage(boolean getSystemPackages) {
+    applicationsManager.start(getSystemPackages);
+    view.showLoading();
   }
 
   @Override public void onDestroy() {

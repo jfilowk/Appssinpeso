@@ -39,12 +39,13 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   }
 
   // TODO: Add size photos
-  @Override public void start() {
+  @Override public void start(final boolean getSystemPackages) {
     if (this.listener != null) {
-
       executorService.submit(new Runnable() {
         @Override public void run() {
-          final List<ApplicationInfoStruct> listApplications = appDetails.getPackages();
+          final List<ApplicationInfoStruct> listApplications =
+              appDetails.getPackages(getSystemPackages);
+
           if (listApplications.size() == 0) {
             notifyOnError();
           } else {
@@ -71,6 +72,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               }
             }
           }
+
         }
       });
     }
@@ -153,6 +155,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         + pStats.externalDataSize)));
   }
 
+  // TODO: Create KB system
   private float convertToMb(long size) {
     float v = (float) size / 1024000;
     DecimalFormat format = new DecimalFormat();

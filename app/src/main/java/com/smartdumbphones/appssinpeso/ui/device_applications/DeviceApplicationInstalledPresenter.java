@@ -7,6 +7,8 @@ public interface DeviceApplicationInstalledPresenter {
 
   void getDetailPackage();
 
+  void filterSystemPackage(boolean getSystemPackage);
+
   void onDestroy();
 
   void attachView(DeviceApplicationInstalledView view);

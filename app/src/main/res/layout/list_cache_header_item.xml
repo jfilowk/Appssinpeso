@@ -13,7 +13,7 @@
       android:textColor="@color/colorPrimary"
       android:layout_alignParentTop="true"
       android:gravity="center"
-      android:text="Num. Applications"
+      android:text="@string/num_applications"
       android:textSize="15dp"
       android:textStyle="bold"
       />
@@ -30,7 +30,7 @@
       android:gravity="right"
       android:textColor="@color/colorAccent"
       android:paddingRight="10dp"
-      android:text="78"
+      android:text="@string/num"
       android:textSize="25dp"
       />
 

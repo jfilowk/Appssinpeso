@@ -2,8 +2,10 @@ package com.smartdumbphones.appssinpeso.ui.device_applications;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.Bind;
@@ -27,11 +29,18 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   @Inject DeviceApplicationInstalledPresenter presenter;
 
   private InstalledComponent component;
+  private AllApplications allApplications;
+
+  private boolean showSystemPackage = true;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.list_cache_activity);
     ButterKnife.bind(this);
+
+    this.allApplications = new AllApplications();
+
+    recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,11 +64,32 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
     component.inject(this);
   }
 
+  @Override public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.device_applications_menu, menu);
+    return true;
+  }
+
+  @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    if (showSystemPackage) {
+      showSystemPackage = false;
+      menu.findItem(R.id.display_system_apps).setTitle(R.string.hide_system_apps);
+    } else {
+      showSystemPackage = true;
+      menu.findItem(R.id.display_system_apps).setTitle(R.string.show_system_apps);
+    }
+
+    return super.onPrepareOptionsMenu(menu);
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     int itemId = item.getItemId();
     switch (itemId) {
       case android.R.id.home:
         onBackPressed();
+        break;
+      case R.id.display_system_apps:
+        ActivityCompat.invalidateOptionsMenu(this);
+        presenter.filterSystemPackage(showSystemPackage);
         break;
     }
     return true;
@@ -74,9 +104,13 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   }
 
   @Override public void displayListCache(final AllApplications allApplications) {
-    adapter = new ApplicationInstalledAdapter(allApplications);
-    recyclerList.setAdapter(adapter);
-    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+    this.allApplications = allApplications;
+    if (adapter == null) {
+      adapter = new ApplicationInstalledAdapter(this.allApplications);
+      recyclerList.setAdapter(adapter);
+    } else {
+      adapter.refreshData(this.allApplications);
+    }
   }
 
   @Override protected void onDestroy() {
@@ -85,13 +119,13 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   }
 
   @Override public void showError(String error) {
-    Toast.makeText(this, "No packages found", Toast.LENGTH_SHORT).show();
+    Toast.makeText(this, R.string.no_packages_found_toast, Toast.LENGTH_SHORT).show();
   }
 
   private void initProgressDialog() {
     progressDialog = new ProgressDialog(this);
     progressDialog.setIcon(android.R.drawable.alert_dark_frame);
-    progressDialog.setMessage("Loading...");
+    progressDialog.setMessage(getString(R.string.loading_progress));
     progressDialog.setCancelable(false);
   }
 }

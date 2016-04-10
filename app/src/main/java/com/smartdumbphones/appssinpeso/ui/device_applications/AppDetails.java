@@ -1,6 +1,7 @@
 package com.smartdumbphones.appssinpeso.ui.device_applications;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
@@ -15,11 +16,11 @@ public class AppDetails {
     this.context = context;
   }
 
-  public ArrayList<ApplicationInfoStruct> getPackages() {
-    return getInstalledApps(false);
+  public ArrayList<ApplicationInfoStruct> getPackages(boolean getSystemApplications) {
+    return getInstalledApps(getSystemApplications);
   }
 
-  private ArrayList<ApplicationInfoStruct> getInstalledApps(boolean getSysPackages) {
+  private ArrayList<ApplicationInfoStruct> getInstalledApps(boolean getSystemApplications) {
     ArrayList<ApplicationInfoStruct> res = new ArrayList<>();
     PackageManager packageManager = context.getPackageManager();
     List<PackageInfo> packs = packageManager.getInstalledPackages(0);
@@ -30,16 +31,23 @@ public class AppDetails {
 
     for (int i = 0; i < packs.size(); i++) {
       PackageInfo p = packs.get(i);
-      if ((!getSysPackages) && (p.versionName == null)) {
-        continue;
+      ApplicationInfoStruct applicationInfoStruct = new ApplicationInfoStruct();
+
+      if (!getSystemApplications) {
+        if (isNotSystemApplication(p)) continue;
       }
-      ApplicationInfoStruct newInfo = new ApplicationInfoStruct();
-      newInfo.setAppname(p.applicationInfo.loadLabel(packageManager).toString());
-      newInfo.setPname(p.packageName);
-      newInfo.setDatadir(p.applicationInfo.dataDir);
-      newInfo.setIcon(p.applicationInfo.loadIcon(packageManager));
-      res.add(newInfo);
+
+      applicationInfoStruct.setAppname(p.applicationInfo.loadLabel(packageManager).toString());
+      applicationInfoStruct.setPname(p.packageName);
+      applicationInfoStruct.setDatadir(p.applicationInfo.dataDir);
+      applicationInfoStruct.setIcon(p.applicationInfo.loadIcon(packageManager));
+
+      res.add(applicationInfoStruct);
     }
     return res;
+  }
+
+  private boolean isNotSystemApplication(PackageInfo p) {
+    return (p.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
   }
 }
