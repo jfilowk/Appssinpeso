@@ -119,13 +119,13 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   }
 
   @Override public void showError(String error) {
-    Toast.makeText(this, "No packages found", Toast.LENGTH_SHORT).show();
+    Toast.makeText(this, R.string.no_packages_found_toast, Toast.LENGTH_SHORT).show();
   }
 
   private void initProgressDialog() {
     progressDialog = new ProgressDialog(this);
     progressDialog.setIcon(android.R.drawable.alert_dark_frame);
-    progressDialog.setMessage("Loading...");
+    progressDialog.setMessage(getString(R.string.loading_progress));
     progressDialog.setCancelable(false);
   }
 }

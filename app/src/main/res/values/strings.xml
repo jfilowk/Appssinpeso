@@ -15,4 +15,8 @@
   <string name="amount_storage_example_item">14 MB</string>
   <string name="hide_system_apps">Hide System Apps</string>
   <string name="show_system_apps">Show System Apps</string>
+  <string name="loading_progress">Loading…</string>
+  <string name="no_packages_found_toast">No packages found</string>
+  <string name="num_applications">Num. Applications</string>
+  <string name="num">78</string>
 </resources>
