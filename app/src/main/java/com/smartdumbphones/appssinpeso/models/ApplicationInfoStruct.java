@@ -7,17 +7,17 @@ public class ApplicationInfoStruct {
   private String pname = "";
   private Drawable icon;
   private String datadir = "";
-  private float apkSize = 0;
-  private float cacheSize = 0;
-  private float dataSize = 0;
-  private float totalSize = 0;
+  private long apkSize = 0;
+  private long cacheSize = 0;
+  private long dataSize = 0;
+  private long totalSize = 0;
   private boolean isSystem;
 
   public ApplicationInfoStruct() {
   }
 
   public ApplicationInfoStruct(String appname, String pname, Drawable icon, String datadir,
-      float apkSize, float cacheSize, float dataSize, float totalSize, boolean isSystem) {
+      long apkSize, long cacheSize, long dataSize, long totalSize, boolean isSystem) {
     this.appname = appname;
     this.pname = pname;
     this.icon = icon;
@@ -61,35 +61,35 @@ public class ApplicationInfoStruct {
     this.datadir = datadir;
   }
 
-  public float getApkSize() {
+  public long getApkSize() {
     return apkSize;
   }
 
-  public void setApkSize(float apkSize) {
+  public void setApkSize(long apkSize) {
     this.apkSize = apkSize;
   }
 
-  public float getCacheSize() {
+  public long getCacheSize() {
     return cacheSize;
   }
 
-  public void setCacheSize(float cacheSize) {
+  public void setCacheSize(long cacheSize) {
     this.cacheSize = cacheSize;
   }
 
-  public float getDataSize() {
+  public long getDataSize() {
     return dataSize;
   }
 
-  public void setDataSize(float dataSize) {
+  public void setDataSize(long dataSize) {
     this.dataSize = dataSize;
   }
 
-  public float getTotalSize() {
+  public long getTotalSize() {
     return totalSize;
   }
 
-  public void setTotalSize(float totalSize) {
+  public void setTotalSize(long totalSize) {
     this.totalSize = apkSize + cacheSize;
   }
 

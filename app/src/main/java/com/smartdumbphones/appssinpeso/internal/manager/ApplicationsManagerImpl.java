@@ -9,7 +9,6 @@ import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import com.smartdumbphones.appssinpeso.ui.device_applications.AppDetails;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -72,7 +71,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               }
             }
           }
-
         }
       });
     }
@@ -109,8 +107,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     }
 
     return new AllApplications.Builder().setTotalNumApplications(applicationInfoStructList.size())
-        .setTotalSizeApplications(convertToMb(totalApplicationSize))
-        .setTotalSizeCache(convertToMb(totalCacheSize))
+        .setTotalSizeApplications(totalApplicationSize)
+        .setTotalSizeCache(totalCacheSize)
         .setListApplications(applicationInfoStructList)
         .build();
   }
@@ -145,21 +143,13 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private void addSizesApplication(PackageStats pStats,
       ApplicationInfoStruct applicationInfoStruct) {
-    applicationInfoStruct.setApkSize(convertToMb(pStats.codeSize));
-    applicationInfoStruct.setCacheSize(convertToMb(pStats.cacheSize + pStats.externalCacheSize));
-    applicationInfoStruct.setDataSize(convertToMb(pStats.dataSize + pStats.externalDataSize));
-    applicationInfoStruct.setTotalSize(convertToMb((pStats.codeSize
+    applicationInfoStruct.setApkSize(pStats.codeSize);
+    applicationInfoStruct.setCacheSize(pStats.cacheSize + pStats.externalCacheSize);
+    applicationInfoStruct.setDataSize(pStats.dataSize + pStats.externalDataSize);
+    applicationInfoStruct.setTotalSize((pStats.codeSize
         + pStats.cacheSize
         + pStats.externalCacheSize
         + pStats.dataSize
-        + pStats.externalDataSize)));
-  }
-
-  // TODO: Create KB system
-  private float convertToMb(long size) {
-    float v = (float) size / 1024000;
-    DecimalFormat format = new DecimalFormat();
-    format.setMaximumFractionDigits(1);
-    return Float.parseFloat(format.format(v));
+        + pStats.externalDataSize));
   }
 }
