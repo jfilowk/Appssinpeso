@@ -24,6 +24,10 @@ public class DeviceApplicationInstalledPresenterImpl
 
   }
 
+  @Override public void filterSystemPackage() {
+
+  }
+
   @Override public void onDestroy() {
     applicationsManager.stop();
   }
