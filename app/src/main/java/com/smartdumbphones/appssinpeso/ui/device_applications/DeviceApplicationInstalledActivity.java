@@ -37,9 +37,6 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
 
     this.allApplications = new AllApplications();
 
-    // TODO: volver a mostrar las aplicaciones del sistema 
-    adapter = new ApplicationInstalledAdapter(this.allApplications);
-    recyclerList.setAdapter(adapter);
     recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
     if (getSupportActionBar() != null) {
@@ -92,8 +89,12 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
 
   @Override public void displayListCache(final AllApplications allApplications) {
     this.allApplications = allApplications;
-    adapter = new ApplicationInstalledAdapter(this.allApplications);
-    recyclerList.setAdapter(adapter);
+    if (adapter == null) {
+      adapter = new ApplicationInstalledAdapter(this.allApplications);
+      recyclerList.setAdapter(adapter);
+    } else {
+      adapter.refreshData(this.allApplications);
+    }
   }
 
   @Override protected void onDestroy() {

@@ -21,8 +21,15 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
   private AllApplications allApplications;
 
   public ApplicationInstalledAdapter(AllApplications allApplications) {
-    this.listApplication = allApplications.getListApplications();
     this.allApplications = allApplications;
+    this.listApplication = allApplications.getListApplications();
+  }
+
+  public void refreshData(AllApplications allApplications){
+    this.allApplications = allApplications;
+    this.listApplication.clear();
+    this.listApplication.addAll(allApplications.getListApplications());
+    notifyDataSetChanged();
   }
 
   public static class RowViewHolder extends RecyclerView.ViewHolder {

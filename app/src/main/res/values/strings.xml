@@ -13,5 +13,5 @@
   <string name="example_cache_item">Cache: 14 MB</string>
   <string name="example_data_item">Data: 14 MB</string>
   <string name="amount_storage_example_item">14 MB</string>
-  <string name="remove_system_apps">Remove System Apps</string>
+  <string name="remove_system_apps">Hide System Apps</string>
 </resources>
