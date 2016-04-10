@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import com.smartdumbphones.appssinpeso.Appssinpeso;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThreadImpl;
+import com.smartdumbphones.appssinpeso.internal.helper.Utils;
 import com.smartdumbphones.appssinpeso.internal.manager.ApplicationsManager;
 import com.smartdumbphones.appssinpeso.internal.manager.ApplicationsManagerImpl;
 import com.smartdumbphones.appssinpeso.ui.device_applications.AppDetails;
@@ -49,7 +50,11 @@ import javax.inject.Singleton;
     return new AppDetails(context);
   }
 
-  @Provides LoginInteractor provideLoginInteractor(LoginInteractorImpl interactor) {
+  @Provides @Singleton LoginInteractor provideLoginInteractor(LoginInteractorImpl interactor) {
     return interactor;
+  }
+
+  @Provides @Singleton Utils provideUtils(Context context) {
+    return new Utils(context);
   }
 }

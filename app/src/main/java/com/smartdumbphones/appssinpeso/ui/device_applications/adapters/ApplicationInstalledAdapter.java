@@ -1,5 +1,6 @@
 package com.smartdumbphones.appssinpeso.ui.device_applications.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +19,18 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
   private static final int TYPE_HEADER = 100;
   private static final int TYPE_ROW = 200;
   private List<ApplicationInfoStruct> listApplication;
+  // FIXME: REVIEW
+  private static Context context;
   private AllApplications allApplications;
 
-  public ApplicationInstalledAdapter(AllApplications allApplications) {
+
+  public ApplicationInstalledAdapter(Context context, AllApplications allApplications) {
+    ApplicationInstalledAdapter.context = context;
     this.allApplications = allApplications;
     this.listApplication = allApplications.getListApplications();
   }
 
-  public void refreshData(AllApplications allApplications){
+  public void refreshData(AllApplications allApplications) {
     this.allApplications = allApplications;
     this.listApplication.clear();
     this.listApplication.addAll(allApplications.getListApplications());
@@ -45,22 +50,21 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       ButterKnife.bind(this, itemView);
     }
 
-    // TODO: Check why data is not sum correctly. Return KB if its possible
     public void bindApplicationInfo(ApplicationInfoStruct applicationInfoStruct) {
       txtNameApplication.setText(applicationInfoStruct.getAppname());
-      txtAppSize.setText("App: " + String.valueOf(applicationInfoStruct.getApkSize()) + " MB");
+      txtAppSize.setText("App: " + getSizeHumanReadbeable(applicationInfoStruct.getApkSize()));
       if (applicationInfoStruct.getCacheSize() == 0.0) {
         txtCacheSize.setText("Cache: -");
       } else {
         txtCacheSize.setText(
-            "Cache: " + String.valueOf(applicationInfoStruct.getCacheSize()) + " MB");
+            "Cache: " + getSizeHumanReadbeable(applicationInfoStruct.getCacheSize()));
       }
       if (applicationInfoStruct.getDataSize() == 0.0) {
         txtDataSize.setText("Data: -");
       } else {
-        txtDataSize.setText("Data: " + String.valueOf(applicationInfoStruct.getDataSize()) + " MB");
+        txtDataSize.setText("Data: " + getSizeHumanReadbeable(applicationInfoStruct.getDataSize()));
       }
-      txtTotalSize.setText(String.valueOf(applicationInfoStruct.getTotalSize()) + " MB");
+      txtTotalSize.setText(getSizeHumanReadbeable(applicationInfoStruct.getTotalSize()));
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
   }
@@ -83,11 +87,11 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
         separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_ALL_APPLICATIONS.getValue()) {
         lblHeaderName.setText(R.string.total_applications_header);
-        lblHeaderSize.setText(allApplications.getTotalSizeApplications() + " MB");
+        lblHeaderSize.setText(getSizeHumanReadbeable(allApplications.getTotalSizeApplications()));
         separator.setVisibility(View.GONE);
       } else if (position == ItemTypes.HEADER_CACHE.getValue()) {
         lblHeaderName.setText(R.string.total_cache_header);
-        lblHeaderSize.setText(allApplications.getTotalSizeCache() + " MB");
+        lblHeaderSize.setText(getSizeHumanReadbeable(allApplications.getTotalSizeCache()));
         separator.setVisibility(View.VISIBLE);
       }
     }
@@ -145,5 +149,9 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
 
   private ApplicationInfoStruct getApplicationInfoStruct(int position) {
     return listApplication.get(position - 3);
+  }
+
+  private static String getSizeHumanReadbeable(long size) {
+    return android.text.format.Formatter.formatShortFileSize(context, size);
   }
 }
