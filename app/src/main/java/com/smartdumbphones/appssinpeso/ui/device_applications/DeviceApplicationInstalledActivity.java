@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.Bind;
@@ -37,6 +38,10 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    adapter = new ApplicationInstalledAdapter(new AllApplications());
+    recyclerList.setAdapter(adapter);
+    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+
     initProgressDialog();
     initializeInjectors();
 
@@ -55,11 +60,19 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
     component.inject(this);
   }
 
+  @Override public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.device_applications_menu, menu);
+    return true;
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     int itemId = item.getItemId();
     switch (itemId) {
       case android.R.id.home:
         onBackPressed();
+        break;
+      case R.id.remove_system_apps:
+        presenter.filterSystemPackage();
         break;
     }
     return true;
@@ -74,9 +87,7 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
   }
 
   @Override public void displayListCache(final AllApplications allApplications) {
-    adapter = new ApplicationInstalledAdapter(allApplications);
-    recyclerList.setAdapter(adapter);
-    recyclerList.setLayoutManager(new LinearLayoutManager(this));
+
   }
 
   @Override protected void onDestroy() {

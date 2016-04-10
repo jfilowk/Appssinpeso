@@ -5,7 +5,7 @@ import com.smartdumbphones.appssinpeso.models.AllApplications;
 public interface ApplicationsManager {
   void attachOnApplicationListener(OnApplicationsListener listener);
 
-  void start();
+  void start(boolean getSystemPackages);
 
   void stop();
 

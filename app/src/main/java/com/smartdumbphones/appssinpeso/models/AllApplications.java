@@ -17,6 +17,10 @@ public class AllApplications {
     this.listApplications = listApplications;
   }
 
+  public AllApplications() {
+
+  }
+
   public static class Builder {
     private int totalNumApplications;
     private float totalSizeApplications;
