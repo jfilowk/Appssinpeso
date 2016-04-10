@@ -24,8 +24,8 @@ public class DeviceApplicationInstalledPresenterImpl
 
   }
 
-  @Override public void filterSystemPackage() {
-    applicationsManager.start(false);
+  @Override public void filterSystemPackage(boolean getSystemPackages) {
+    applicationsManager.start(getSystemPackages);
     view.showLoading();
   }
 

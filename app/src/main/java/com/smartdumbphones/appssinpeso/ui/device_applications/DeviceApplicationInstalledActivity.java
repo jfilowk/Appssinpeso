@@ -2,6 +2,7 @@ package com.smartdumbphones.appssinpeso.ui.device_applications;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -29,6 +30,8 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
 
   private InstalledComponent component;
   private AllApplications allApplications;
+
+  private boolean showSystemPackage = true;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -66,14 +69,27 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
     return true;
   }
 
+  @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    if (showSystemPackage) {
+      showSystemPackage = false;
+      menu.findItem(R.id.display_system_apps).setTitle(R.string.hide_system_apps);
+    } else {
+      showSystemPackage = true;
+      menu.findItem(R.id.display_system_apps).setTitle(R.string.show_system_apps);
+    }
+
+    return super.onPrepareOptionsMenu(menu);
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     int itemId = item.getItemId();
     switch (itemId) {
       case android.R.id.home:
         onBackPressed();
         break;
-      case R.id.remove_system_apps:
-        presenter.filterSystemPackage();
+      case R.id.display_system_apps:
+        ActivityCompat.invalidateOptionsMenu(this);
+        presenter.filterSystemPackage(showSystemPackage);
         break;
     }
     return true;

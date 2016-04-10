@@ -7,7 +7,7 @@ public interface DeviceApplicationInstalledPresenter {
 
   void getDetailPackage();
 
-  void filterSystemPackage();
+  void filterSystemPackage(boolean getSystemPackage);
 
   void onDestroy();
 
