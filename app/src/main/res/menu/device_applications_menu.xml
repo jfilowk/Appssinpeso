@@ -5,7 +5,7 @@
   <item
       android:id="@+id/display_system_apps"
       android:title="@string/hide_system_apps"
-      app:showAsAction="always"
+      app:showAsAction="never"
       />
 
 </menu>

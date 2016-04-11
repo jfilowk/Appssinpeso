@@ -48,6 +48,8 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    ActivityCompat.invalidateOptionsMenu(this);
+
     initProgressDialog();
     initializeInjectors();
 
@@ -90,7 +92,6 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
         onBackPressed();
         break;
       case R.id.display_system_apps:
-        ActivityCompat.invalidateOptionsMenu(this);
         presenter.filterSystemPackage(showSystemPackage);
         break;
     }
