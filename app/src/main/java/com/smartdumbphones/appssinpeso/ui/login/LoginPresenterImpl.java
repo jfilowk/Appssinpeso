@@ -3,8 +3,7 @@ package com.smartdumbphones.appssinpeso.ui.login;
 import javax.inject.Inject;
 
 public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
-  private static String TAG = "LoginPresenter";
-  // Instance of interfaces
+
   private LoginInteractor loginInteractor;
   private LoginView loginView;
 
@@ -17,8 +16,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
   }
 
   @Override public void validateCredentials(String email) {
-    loginView.showProgress();
     loginInteractor.login(email, this);
+    loginView.showProgress();
   }
 
   @Override public void onErrorCredentials() {
@@ -27,7 +26,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
   }
 
   @Override public void onSuccess() {
-    loginView.hideProgress();
     loginView.goListApplications();
+    loginView.hideProgress();
   }
 }

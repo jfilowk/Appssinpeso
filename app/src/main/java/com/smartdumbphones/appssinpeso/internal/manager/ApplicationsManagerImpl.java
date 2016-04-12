@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private ExecutorService executorService;
@@ -28,6 +30,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
       ExecutorService executorService, PackageManager packageManager) {
     this.appDetails = appDetails;
+    // TODO: singlenton? never destroyed?
     this.executorService = executorService;
     this.mainThread = mainThread;
     this.packageManager = packageManager;
@@ -146,10 +149,12 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     applicationInfoStruct.setApkSize(pStats.codeSize);
     applicationInfoStruct.setCacheSize(pStats.cacheSize + pStats.externalCacheSize);
     applicationInfoStruct.setDataSize(pStats.dataSize + pStats.externalDataSize);
-    applicationInfoStruct.setTotalSize((pStats.codeSize
-        + pStats.cacheSize
-        + pStats.externalCacheSize
-        + pStats.dataSize
-        + pStats.externalDataSize));
+    applicationInfoStruct.setTotalSize(sumSizes(applicationInfoStruct));
+  }
+
+  private long sumSizes(ApplicationInfoStruct applicationInfoStruct) {
+    return applicationInfoStruct.getApkSize()
+        + applicationInfoStruct.getCacheSize()
+        + applicationInfoStruct.getDataSize();
   }
 }

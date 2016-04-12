@@ -90,7 +90,7 @@ public class ApplicationInfoStruct {
   }
 
   public void setTotalSize(long totalSize) {
-    this.totalSize = apkSize + cacheSize;
+    this.totalSize = totalSize;
   }
 
   public boolean isSystem() {
@@ -99,5 +99,15 @@ public class ApplicationInfoStruct {
 
   public void setIsSystem(boolean isSystem) {
     this.isSystem = isSystem;
+  }
+
+  @Override public String toString() {
+    return "ApplicationInfoStruct{" +
+        "appname='" + appname + '\'' +
+        ", apkSize=" + apkSize +
+        ", cacheSize=" + cacheSize +
+        ", dataSize=" + dataSize +
+        ", totalSize=" + totalSize +
+        '}';
   }
 }
