@@ -30,6 +30,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
       ExecutorService executorService, PackageManager packageManager) {
     this.appDetails = appDetails;
+    // TODO: singlenton? never destroyed?
     this.executorService = executorService;
     this.mainThread = mainThread;
     this.packageManager = packageManager;
