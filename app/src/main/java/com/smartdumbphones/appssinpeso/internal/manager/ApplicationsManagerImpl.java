@@ -69,6 +69,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                     new CachePackState(new CachePackState.Callback() {
                       @Override public void onSuccess(PackageStats stats) {
                         listPackageStats.add(stats);
+                        // TODO: 13/04/2016 Extract this
                         if (isFinishedProcess(listApplications.size(), listPackageStats.size())) {
                           AllApplications allApplications =
                               mergeData(listApplications, listPackageStats);
@@ -127,21 +128,30 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private void notifyOnSuccess(final AllApplications allApplications) {
     if (listener != null) {
       DeviceApplicationDBMapper deviceApplicationDBMapper = new DeviceApplicationDBMapper();
-      CacheApplicationCRUD cacheApplicationCRUD = new CacheApplicationCRUDImpl(context, deviceApplicationDBMapper);
-      DiskDeviceApplicationStore diskDeviceApplicationStore = new DiskDeviceApplicationStore(cacheApplicationCRUD);
+      CacheApplicationCRUD cacheApplicationCRUD =
+          new CacheApplicationCRUDImpl(context, deviceApplicationDBMapper);
+      DiskDeviceApplicationStore diskDeviceApplicationStore =
+          new DiskDeviceApplicationStore(cacheApplicationCRUD);
       DeviceApplicationDataMapper deviceApplicationDataMapper = new DeviceApplicationDataMapper();
-      ApplicationInfoStructRepository applicationInfoStructRepository = new ApplicationInfoStructRepositoryImpl(diskDeviceApplicationStore,deviceApplicationDataMapper);
+      final ApplicationInfoStructRepository applicationInfoStructRepository =
+          new ApplicationInfoStructRepositoryImpl(diskDeviceApplicationStore,
+              deviceApplicationDataMapper);
+      executorService.submit(new Runnable() {
+        @Override public void run() {
+          applicationInfoStructRepository.createDeviceApplicationList(
+              allApplications.getListApplications(),
+              new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
+                @Override public void onCreateDeviceApplicationListCallback(boolean success) {
+                  Timber.e("INSERTADO CORRECTAMENTE");
+                }
+
+                @Override public void onError() {
+
+                }
+              });
+        }
+      });
       Timber.e("ACABO DE EMPEZAR");
-      applicationInfoStructRepository.createDeviceApplicationList(allApplications.getListApplications(),
-          new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
-            @Override public void onCreateDeviceApplicationListCallback(boolean success) {
-              Timber.e("INSERTADO CORRECTAMENTE");
-            }
-
-            @Override public void onError() {
-
-            }
-          });
       mainThread.post(new Runnable() {
         @Override public void run() {
           listener.onSuccess(allApplications);
