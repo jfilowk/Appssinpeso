@@ -5,14 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.smartdumbphones.appssinpeso.data.entity.DeviceApplicationEntity;
+import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDBMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class CacheApplicationCRUDImpl extends CacheApplicationDB implements CacheApplicationCRUD {
 
-  public CacheApplicationCRUDImpl(Context context) {
+  private DeviceApplicationDBMapper deviceApplicationDBMapper;
+
+  public CacheApplicationCRUDImpl(Context context,
+      DeviceApplicationDBMapper deviceApplicationDBMapper) {
     super(context);
+    this.deviceApplicationDBMapper = deviceApplicationDBMapper;
   }
 
   @Override public boolean insertListDeviceApplicationEntity(
@@ -32,11 +37,19 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     return success;
   }
 
-  @Override public Cursor obtainListDeviceApplicationEntity() {
+  @Override public void obtainListDeviceApplicationEntity(DeviceApplicationListCallback callback) {
     SQLiteDatabase db = this.getReadableDatabase();
     String selectQuery = "SELECT * FROM " + APPLICATIONS_TABLE;
-
-    return db.rawQuery(selectQuery, null);
+    try {
+      Cursor cursor = db.rawQuery(selectQuery, null);
+      List<DeviceApplicationEntity> deviceApplicationEntityList =
+          deviceApplicationDBMapper.transformToListEntity(cursor);
+      callback.onDeviceApplicationListLoaded(deviceApplicationEntityList);
+    } catch (Exception e) {
+      callback.onError();
+    } finally {
+      db.close();
+    }
   }
 
   private ContentValues bindApplicationInfoStruct(DeviceApplicationEntity deviceApplicationEntity) {

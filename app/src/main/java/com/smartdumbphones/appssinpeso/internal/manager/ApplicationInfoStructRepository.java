@@ -5,7 +5,8 @@ import java.util.List;
 
 public interface ApplicationInfoStructRepository {
 
-  void createDeviceApplicationList(CreateDeviceApplicationListCallback callback);
+  void createDeviceApplicationList(List<ApplicationInfoStruct> applicationInfoStructList,
+      CreateDeviceApplicationListCallback callback);
 
   void getDeviceApplicationList(DeviceApplicationListCallback callback);
 
