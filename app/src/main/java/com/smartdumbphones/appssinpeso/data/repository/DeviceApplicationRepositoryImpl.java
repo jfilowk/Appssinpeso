@@ -1,14 +1,22 @@
 package com.smartdumbphones.appssinpeso.data.repository;
 
-public class DeviceApplicationRepositoryImpl implements DeviceApplicationRepository {
+import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDataMapper;
+import com.smartdumbphones.appssinpeso.internal.manager.ApplicationInfoStructRepository;
 
-  @Override public void createDeviceApplicationList(
-      com.smartdumbphones.appssinpeso.data.repository.DeviceApplicationRepository.CreateDeviceApplicationListCallback callback) {
+public class DeviceApplicationRepositoryImpl implements ApplicationInfoStructRepository {
+
+  // Factory DeviceDataStore
+  private final DeviceApplicationDataMapper deviceApplicationDataMapper;
+
+  public DeviceApplicationRepositoryImpl(DeviceApplicationDataMapper deviceApplicationDataMapper) {
+    this.deviceApplicationDataMapper = deviceApplicationDataMapper;
+  }
+
+  @Override public void createDeviceApplicationList(CreateDeviceApplicationListCallback callback) {
 
   }
 
-  @Override public void getDeviceApplicationList(
-      com.smartdumbphones.appssinpeso.data.repository.DeviceApplicationRepository.DeviceApplicationListCallback callback) {
+  @Override public void getDeviceApplicationList(DeviceApplicationListCallback callback) {
 
   }
 }

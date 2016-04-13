@@ -1,9 +1,9 @@
-package com.smartdumbphones.appssinpeso.data.repository;
+package com.smartdumbphones.appssinpeso.internal.manager;
 
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import java.util.List;
 
-public interface DeviceApplicationRepository {
+public interface ApplicationInfoStructRepository {
 
   void createDeviceApplicationList(CreateDeviceApplicationListCallback callback);
 

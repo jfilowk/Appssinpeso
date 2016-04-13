@@ -1,21 +1,13 @@
 package com.smartdumbphones.appssinpeso.data.cache;
 
 import android.database.Cursor;
-import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
+import com.smartdumbphones.appssinpeso.data.entity.DeviceApplicationEntity;
 import java.util.List;
 
 public interface CacheApplicationCRUD {
 
-  boolean insertListDeviceApplication(List<ApplicationInfoStruct> applicationInfoStructList);
+  boolean insertListDeviceApplicationEntity(List<DeviceApplicationEntity> deviceApplicationEntityList);
 
-  Cursor obtainListDeviceApplication();
+  Cursor obtainListDeviceApplicationEntity();
 
-  long createCacheApplication(ApplicationInfoStruct applicationInfoStruct);
-
-  long deleteCacheApplication();
-
-  //TODO: Improve via id like an integer
-  Cursor getApplication(String packageName);
-
-  Cursor getCacheApplications();
 }

@@ -37,11 +37,9 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
       "DELETE TABLE IF EXISTS " + APPLICATIONS_TABLE;
 
   private static final int DB_VERSION = 1;
-  private Context context;
 
   public CacheApplicationDB(Context context) {
     super(context, DATABASE_NAME, null, DB_VERSION);
-    this.context = context;
   }
 
   @Override public void onCreate(SQLiteDatabase db) {

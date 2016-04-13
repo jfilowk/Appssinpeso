@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
+import com.smartdumbphones.appssinpeso.data.entity.DeviceApplicationEntity;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -15,14 +15,14 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     super(context);
   }
 
-  @Override public boolean insertListDeviceApplication(
-      List<ApplicationInfoStruct> applicationInfoStructList) {
+  @Override public boolean insertListDeviceApplicationEntity(
+      List<DeviceApplicationEntity> deviceApplicationEntityList) {
     boolean success = true;
-    if (applicationInfoStructList != null) {
-      for (ApplicationInfoStruct applicationInfoStruct : applicationInfoStructList) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    SQLiteDatabase db = this.getWritableDatabase();
+    if (deviceApplicationEntityList != null) {
+      for (DeviceApplicationEntity deviceApplicationEntity : deviceApplicationEntityList) {
         long insert =
-            db.insert(APPLICATIONS_TABLE, null, bindApplicationInfoStruct(applicationInfoStruct));
+            db.insert(APPLICATIONS_TABLE, null, bindApplicationInfoStruct(deviceApplicationEntity));
         if (insert > 0) {
           success = false;
           break;
@@ -32,40 +32,23 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     return success;
   }
 
-  @Override public Cursor obtainListDeviceApplication() {
+  @Override public Cursor obtainListDeviceApplicationEntity() {
     SQLiteDatabase db = this.getReadableDatabase();
     String selectQuery = "SELECT * FROM " + APPLICATIONS_TABLE;
 
     return db.rawQuery(selectQuery, null);
   }
 
-  @Override public long createCacheApplication(ApplicationInfoStruct applicationInfoStruct) {
-    return 0;
-  }
-
-  @Override public long deleteCacheApplication() {
-    return 0;
-  }
-
-  @Override public Cursor getApplication(String packageName) {
-    return null;
-  }
-
-  @Override public Cursor getCacheApplications() {
-    return null;
-  }
-
-  private ContentValues bindApplicationInfoStruct(ApplicationInfoStruct applicationInfoStruct) {
+  private ContentValues bindApplicationInfoStruct(DeviceApplicationEntity deviceApplicationEntity) {
     ContentValues values = new ContentValues();
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Date date = new Date();
 
-    values.put("package_name", applicationInfoStruct.getPname());
-    values.put("apk_size", applicationInfoStruct.getApkSize());
-    values.put("cache_size", applicationInfoStruct.getCacheSize());
-    values.put("data_size", applicationInfoStruct.getDataSize());
+    values.put("package_name", deviceApplicationEntity.getPackageName());
+    values.put("apk_size", deviceApplicationEntity.getApkSize());
+    values.put("cache_size", deviceApplicationEntity.getCacheSize());
+    values.put("data_size", deviceApplicationEntity.getDataSize());
     values.put("created_at", dateFormat.format(date));
-    values.put("analyze", applicationInfoStruct.isSystem());
 
     return values;
   }
