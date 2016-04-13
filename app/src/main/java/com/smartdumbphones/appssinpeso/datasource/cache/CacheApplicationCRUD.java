@@ -1,6 +1,21 @@
 package com.smartdumbphones.appssinpeso.datasource.cache;
 
+import android.database.Cursor;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
+import java.util.List;
+
 public interface CacheApplicationCRUD {
 
-  // TODO: 12/04/2016 Create CRUD methods
+  boolean insertListDeviceApplication(List<ApplicationInfoStruct> applicationInfoStructList);
+
+  Cursor obtainListDeviceApplication();
+
+  long createCacheApplication(ApplicationInfoStruct applicationInfoStruct);
+
+  long deleteCacheApplication();
+
+  //TODO: Improve via id like an integer
+  Cursor getApplication(String packageName);
+
+  Cursor getCacheApplications();
 }

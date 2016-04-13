@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class CacheApplicationDB extends SQLiteOpenHelper {
 
+  public static final String DATABASE_NAME = "appssinpeso.db";
+
   public static final String APPLICATIONS_TABLE = "applications";
 
   public static final String ID = "id";
@@ -36,12 +38,10 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
 
   private static final int DB_VERSION = 1;
   private Context context;
-  private String name;
 
-  public CacheApplicationDB(Context context, String name) {
-    super(context, name, null, DB_VERSION);
+  public CacheApplicationDB(Context context) {
+    super(context, DATABASE_NAME, null, DB_VERSION);
     this.context = context;
-    this.name = name;
   }
 
   @Override public void onCreate(SQLiteDatabase db) {
