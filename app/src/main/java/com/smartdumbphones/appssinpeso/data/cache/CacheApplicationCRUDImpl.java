@@ -10,11 +10,13 @@ import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDBMap
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 public class CacheApplicationCRUDImpl extends CacheApplicationDB implements CacheApplicationCRUD {
 
   private DeviceApplicationDBMapper deviceApplicationDBMapper;
 
+  @Inject
   public CacheApplicationCRUDImpl(Context context,
       DeviceApplicationDBMapper deviceApplicationDBMapper) {
     super(context);

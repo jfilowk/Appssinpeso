@@ -7,12 +7,14 @@ import com.smartdumbphones.appssinpeso.data.repository.datasource.DiskDeviceAppl
 import com.smartdumbphones.appssinpeso.internal.manager.ApplicationInfoStructRepository;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import java.util.List;
+import javax.inject.Inject;
 
 public class ApplicationInfoStructRepositoryImpl implements ApplicationInfoStructRepository {
 
   private final DiskDeviceApplicationStore diskDeviceApplicationStore;
   private final DeviceApplicationDataMapper deviceApplicationDataMapper;
 
+  @Inject
   public ApplicationInfoStructRepositoryImpl(DiskDeviceApplicationStore diskDeviceApplicationStore,
       DeviceApplicationDataMapper deviceApplicationDataMapper) {
     this.diskDeviceApplicationStore = diskDeviceApplicationStore;

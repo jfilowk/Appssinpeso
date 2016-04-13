@@ -3,11 +3,13 @@ package com.smartdumbphones.appssinpeso.data.repository.datasource;
 import com.smartdumbphones.appssinpeso.data.cache.CacheApplicationCRUD;
 import com.smartdumbphones.appssinpeso.data.entity.DeviceApplicationEntity;
 import java.util.List;
+import javax.inject.Inject;
 
 public class DiskDeviceApplicationStore implements DeviceApplicationStore {
 
   private final CacheApplicationCRUD cacheApplicationCRUD;
 
+  @Inject
   public DiskDeviceApplicationStore(CacheApplicationCRUD cacheApplicationCRUD) {
     this.cacheApplicationCRUD = cacheApplicationCRUD;
   }

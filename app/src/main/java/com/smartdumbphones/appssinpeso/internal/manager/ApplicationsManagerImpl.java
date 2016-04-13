@@ -4,12 +4,6 @@ import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
-import com.smartdumbphones.appssinpeso.data.cache.CacheApplicationCRUD;
-import com.smartdumbphones.appssinpeso.data.cache.CacheApplicationCRUDImpl;
-import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDBMapper;
-import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDataMapper;
-import com.smartdumbphones.appssinpeso.data.repository.ApplicationInfoStructRepositoryImpl;
-import com.smartdumbphones.appssinpeso.data.repository.datasource.DiskDeviceApplicationStore;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
@@ -31,17 +25,20 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private AppDetails appDetails;
   private PackageManager packageManager;
   private Context context;
+  private ApplicationInfoStructRepository applicationInfoStructRepository;
 
   private MainThread mainThread;
 
   @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
-      ExecutorService executorService, PackageManager packageManager, Context context) {
+      ExecutorService executorService, PackageManager packageManager, Context context,
+      ApplicationInfoStructRepository applicationInfoStructRepository) {
     this.appDetails = appDetails;
     // TODO: singlenton? never destroyed?
     this.executorService = executorService;
     this.mainThread = mainThread;
     this.packageManager = packageManager;
     this.context = context;
+    this.applicationInfoStructRepository = applicationInfoStructRepository;
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -127,15 +124,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private void notifyOnSuccess(final AllApplications allApplications) {
     if (listener != null) {
-      DeviceApplicationDBMapper deviceApplicationDBMapper = new DeviceApplicationDBMapper();
-      CacheApplicationCRUD cacheApplicationCRUD =
-          new CacheApplicationCRUDImpl(context, deviceApplicationDBMapper);
-      DiskDeviceApplicationStore diskDeviceApplicationStore =
-          new DiskDeviceApplicationStore(cacheApplicationCRUD);
-      DeviceApplicationDataMapper deviceApplicationDataMapper = new DeviceApplicationDataMapper();
-      final ApplicationInfoStructRepository applicationInfoStructRepository =
-          new ApplicationInfoStructRepositoryImpl(diskDeviceApplicationStore,
-              deviceApplicationDataMapper);
       executorService.submit(new Runnable() {
         @Override public void run() {
           applicationInfoStructRepository.createDeviceApplicationList(
