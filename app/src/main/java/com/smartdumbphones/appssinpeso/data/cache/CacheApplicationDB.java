@@ -21,7 +21,7 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
       + APPLICATIONS_TABLE
       + "("
       + ID
-      + " integer primery key autoincrement, "
+      + " integer primary key autoincrement, "
       + PACKAGE_NAME
       + " TEXT, "
       + APK_SIZE
@@ -31,7 +31,7 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
       + DATA_SIZE
       + " INTEGER, "
       + CREATED_AT
-      + " DATETIME DEFAULT CURRENT_TIMESTAMP";
+      + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
   public static final String DELETE_TABLE_APPLICATION =
       "DELETE TABLE IF EXISTS " + APPLICATIONS_TABLE;
@@ -48,5 +48,6 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
 
   @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     db.execSQL(DELETE_TABLE_APPLICATION);
+    onCreate(db);
   }
 }

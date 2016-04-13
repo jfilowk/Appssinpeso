@@ -3,6 +3,7 @@ package com.smartdumbphones.appssinpeso.data.cache;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import com.smartdumbphones.appssinpeso.data.entity.DeviceApplicationEntity;
 import com.smartdumbphones.appssinpeso.data.entity.mapper.DeviceApplicationDBMapper;
@@ -25,13 +26,22 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     boolean success = true;
     SQLiteDatabase db = this.getWritableDatabase();
     if (deviceApplicationEntityList != null) {
-      for (DeviceApplicationEntity deviceApplicationEntity : deviceApplicationEntityList) {
-        long insert =
-            db.insert(APPLICATIONS_TABLE, null, bindApplicationInfoStruct(deviceApplicationEntity));
-        if (insert > 0) {
-          success = false;
-          break;
+      db.beginTransaction();
+      try {
+        for (DeviceApplicationEntity deviceApplicationEntity : deviceApplicationEntityList) {
+          long insert = db.insertOrThrow(APPLICATIONS_TABLE, null,
+              bindApplicationInfoStruct(deviceApplicationEntity));
+          if (insert < 0) {
+            success = false;
+            break;
+          }
         }
+        db.setTransactionSuccessful();
+      } catch (SQLException e) {
+        success = false;
+      } finally {
+        db.endTransaction();
+        db.close();
       }
     }
     return success;
@@ -61,7 +71,6 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     values.put("apk_size", deviceApplicationEntity.getApkSize());
     values.put("cache_size", deviceApplicationEntity.getCacheSize());
     values.put("data_size", deviceApplicationEntity.getDataSize());
-    values.put("created_at", dateFormat.format(date));
 
     return values;
   }

@@ -8,12 +8,12 @@ import com.smartdumbphones.appssinpeso.internal.manager.ApplicationInfoStructRep
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import java.util.List;
 
-public class DeviceApplicationRepositoryImpl implements ApplicationInfoStructRepository {
+public class ApplicationInfoStructRepositoryImpl implements ApplicationInfoStructRepository {
 
   private final DiskDeviceApplicationStore diskDeviceApplicationStore;
   private final DeviceApplicationDataMapper deviceApplicationDataMapper;
 
-  public DeviceApplicationRepositoryImpl(DiskDeviceApplicationStore diskDeviceApplicationStore,
+  public ApplicationInfoStructRepositoryImpl(DiskDeviceApplicationStore diskDeviceApplicationStore,
       DeviceApplicationDataMapper deviceApplicationDataMapper) {
     this.diskDeviceApplicationStore = diskDeviceApplicationStore;
     this.deviceApplicationDataMapper = deviceApplicationDataMapper;
