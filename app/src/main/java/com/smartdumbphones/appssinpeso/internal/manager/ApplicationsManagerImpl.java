@@ -95,7 +95,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private AllApplications mergeData(List<ApplicationInfoStruct> listApplications,
       List<PackageStats> listPackageStats) {
-
     long totalCacheSize = 0;
     long totalApplicationSize = 0;
     List<ApplicationInfoStruct> applicationInfoStructList =
@@ -124,12 +123,19 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
   private void notifyOnSuccess(final AllApplications allApplications) {
     if (listener != null) {
+      mainThread.post(new Runnable() {
+        @Override public void run() {
+          listener.onSuccess(allApplications);
+        }
+      });
+
       executorService.submit(new Runnable() {
         @Override public void run() {
-          applicationInfoStructRepository.createDeviceApplicationList(
-              allApplications.getListApplications(),
+          List<ApplicationInfoStruct> listApplications = allApplications.getListApplications();
+          applicationInfoStructRepository.createDeviceApplicationList(listApplications,
               new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
                 @Override public void onCreateDeviceApplicationListCallback(boolean success) {
+                  // TODO: something here
                   Timber.e("INSERTADO CORRECTAMENTE");
                 }
 
@@ -137,12 +143,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
                 }
               });
-        }
-      });
-      Timber.e("ACABO DE EMPEZAR");
-      mainThread.post(new Runnable() {
-        @Override public void run() {
-          listener.onSuccess(allApplications);
         }
       });
     }

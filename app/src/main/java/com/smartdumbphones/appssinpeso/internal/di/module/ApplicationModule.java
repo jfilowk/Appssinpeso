@@ -41,7 +41,7 @@ import javax.inject.Singleton;
   }
 
   @Provides @Singleton ExecutorService provideExecutorSingleThread() {
-    return Executors.newSingleThreadExecutor();
+    return Executors.newFixedThreadPool(2);
   }
 
   @Provides @Singleton PackageManager providePackageManager(Context context) {
