@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasource.cache;
+package com.smartdumbphones.appssinpeso.data.cache;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,7 +35,7 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
   @Override public Cursor obtainListDeviceApplication() {
     SQLiteDatabase db = this.getReadableDatabase();
     String selectQuery = "SELECT * FROM " + APPLICATIONS_TABLE;
-    
+
     return db.rawQuery(selectQuery, null);
   }
 

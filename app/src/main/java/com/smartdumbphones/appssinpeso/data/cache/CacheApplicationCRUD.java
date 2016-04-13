@@ -1,4 +1,4 @@
-package com.smartdumbphones.appssinpeso.datasource.cache;
+package com.smartdumbphones.appssinpeso.data.cache;
 
 import android.database.Cursor;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
