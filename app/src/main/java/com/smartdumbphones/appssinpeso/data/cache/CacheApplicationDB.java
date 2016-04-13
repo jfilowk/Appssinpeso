@@ -50,4 +50,8 @@ public class CacheApplicationDB extends SQLiteOpenHelper {
     db.execSQL(DELETE_TABLE_APPLICATION);
     onCreate(db);
   }
+
+  public static void deleteDataTable(SQLiteDatabase db, String nameTable){
+    db.execSQL("DELETE FROM " + nameTable);
+  }
 }

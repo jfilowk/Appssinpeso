@@ -26,6 +26,7 @@ public class CacheApplicationCRUDImpl extends CacheApplicationDB implements Cach
     boolean success = true;
     SQLiteDatabase db = this.getWritableDatabase();
     if (deviceApplicationEntityList != null) {
+      CacheApplicationDB.deleteDataTable(db, CacheApplicationDB.APPLICATIONS_TABLE);
       db.beginTransaction();
       try {
         for (DeviceApplicationEntity deviceApplicationEntity : deviceApplicationEntityList) {
