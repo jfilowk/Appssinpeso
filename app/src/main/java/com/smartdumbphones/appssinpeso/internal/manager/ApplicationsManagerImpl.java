@@ -66,10 +66,12 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                     new CachePackState(new CachePackState.Callback() {
                       @Override public void onSuccess(PackageStats stats) {
                         listPackageStats.add(stats);
-                        // TODO: 13/04/2016 Extract this
+                        // TODO: 13/04/2016 Extract this eventbus
                         if (isFinishedProcess(listApplications.size(), listPackageStats.size())) {
+                          //stop, return
                           AllApplications allApplications =
-                              mergeData(listApplications, listPackageStats);
+                              generateAllApplicationsAidl(listApplications, listPackageStats);
+                          //notify when finish
                           notifyOnSuccess(allApplications);
                         }
                       }
@@ -80,6 +82,24 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               }
             }
           }
+        }
+      });
+
+      executorService.submit(new Runnable() {
+        @Override public void run() {
+          applicationInfoStructRepository.getDeviceApplicationList(
+              new ApplicationInfoStructRepository.DeviceApplicationListCallback() {
+                @Override public void onDeviceApplicationList(
+                    List<ApplicationInfoStruct> applicationInfoStructList) {
+                  if (applicationInfoStructList != null) {
+
+                  }
+                }
+
+                @Override public void onError() {
+                  Timber.e("error");
+                }
+              });
         }
       });
     }
@@ -93,7 +113,24 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     return listApplicationsSize == listPackageStatsSize;
   }
 
-  private AllApplications mergeData(List<ApplicationInfoStruct> listApplications,
+  private AllApplications generateAllApplicationsCache(
+      List<ApplicationInfoStruct> applicationInfoStructList) {
+    long totalCacheSize = 0;
+    long totalApplicationSize = 0;
+    for (ApplicationInfoStruct applicationInfoStruct : applicationInfoStructList) {
+      totalCacheSize += applicationInfoStruct.getCacheSize();
+      totalApplicationSize += applicationInfoStruct.getApkSize();
+    }
+
+    int totalNumApplications = applicationInfoStructList.size();
+    return new AllApplications.Builder().setTotalNumApplications(totalNumApplications)
+        .setTotalSizeApplications(totalApplicationSize)
+        .setTotalSizeCache(totalCacheSize)
+        .setListApplications(applicationInfoStructList)
+        .build();
+  }
+
+  private AllApplications generateAllApplicationsAidl(List<ApplicationInfoStruct> listApplications,
       List<PackageStats> listPackageStats) {
     long totalCacheSize = 0;
     long totalApplicationSize = 0;
@@ -128,23 +165,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           listener.onSuccess(allApplications);
         }
       });
-
-      executorService.submit(new Runnable() {
-        @Override public void run() {
-          List<ApplicationInfoStruct> listApplications = allApplications.getListApplications();
-          applicationInfoStructRepository.createDeviceApplicationList(listApplications,
-              new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
-                @Override public void onCreateDeviceApplicationListCallback(boolean success) {
-                  // TODO: something here
-                  Timber.e("INSERTADO CORRECTAMENTE");
-                }
-
-                @Override public void onError() {
-
-                }
-              });
-        }
-      });
     }
   }
 
@@ -171,10 +191,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     applicationInfoStruct.setApkSize(pStats.codeSize);
     applicationInfoStruct.setCacheSize(pStats.cacheSize + pStats.externalCacheSize);
     applicationInfoStruct.setDataSize(pStats.dataSize + pStats.externalDataSize);
-    applicationInfoStruct.setTotalSize(sumSizes(applicationInfoStruct));
+    applicationInfoStruct.setTotalSize(sumTotalSize(applicationInfoStruct));
   }
 
-  private long sumSizes(ApplicationInfoStruct applicationInfoStruct) {
+  private long sumTotalSize(ApplicationInfoStruct applicationInfoStruct) {
     return applicationInfoStruct.getApkSize()
         + applicationInfoStruct.getCacheSize()
         + applicationInfoStruct.getDataSize();
