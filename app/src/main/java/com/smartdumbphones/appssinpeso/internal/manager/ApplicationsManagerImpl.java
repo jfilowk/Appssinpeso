@@ -159,7 +159,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           Random random = new Random();
           boolean i = random.nextBoolean();
 
-          long randomLong = 0;
+          long randomLong = -1;
           if (i) randomLong = 1;
 
           long sizeApk =

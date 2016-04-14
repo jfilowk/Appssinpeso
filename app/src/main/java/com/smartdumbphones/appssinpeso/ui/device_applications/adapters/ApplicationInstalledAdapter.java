@@ -23,7 +23,6 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
   // FIXME: REVIEW
   private static Context context;
   private List<ApplicationInfoStruct> listApplication;
-  private List<ApplicationInfoStruct> listApplicationVariance;
   private AllApplications allApplications;
 
   public ApplicationInstalledAdapter(Context context, AllApplications allApplications) {
@@ -34,6 +33,25 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
 
   private static String getSizeHumanReadbeable(long size) {
     return android.text.format.Formatter.formatShortFileSize(context, size);
+  }
+
+  private static String generateVarianceText(long n) {
+    StringBuilder stringBuilder = new StringBuilder();
+    String sizeHumanReadbeable = getSizeHumanReadbeable(n);
+
+    if (isNegative(n)) {
+      stringBuilder.append("▾");
+    } else {
+      stringBuilder.append("▴");
+    }
+
+    stringBuilder.append(sizeHumanReadbeable.replace("-", ""));
+
+    return stringBuilder.toString();
+  }
+
+  private static boolean isNegative(long n) {
+    return n < 0;
   }
 
   public void refreshData(AllApplications allApplications) {
@@ -138,9 +156,10 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       // TODO: 14/04/2016 method to indentify positive or negative
       if (applicationInfoCached != null) {
         varianceLinearLayout.setVisibility(View.VISIBLE);
-        txtAppSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getApkSize()));
-        txtCacheSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getCacheSize()));
-        txtDataSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getDataSize()));
+
+        txtAppSizeVariance.setText(generateVarianceText(applicationInfoCached.getApkSize()));
+        txtCacheSizeVariance.setText(generateVarianceText(applicationInfoCached.getCacheSize()));
+        txtDataSizeVariance.setText(generateVarianceText(applicationInfoCached.getDataSize()));
       } else {
         varianceLinearLayout.setVisibility(View.GONE);
       }
