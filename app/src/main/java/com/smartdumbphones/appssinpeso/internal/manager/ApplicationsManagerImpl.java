@@ -79,8 +79,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                               generateAllApplicationsAidl(listApplications, listPackageStats);
                           //notify when finish
                           if (isDataReady) {
-                            mergeData(applicationInfoStructListCache,
-                                applicationInfoStructListAidl);
+                            notifyDataProcessingDone();
                           } else {
                             isDataReady = true;
                           }
@@ -105,7 +104,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                   if (applicationInfoStructList != null) {
                     applicationInfoStructListCache = applicationInfoStructList;
                     if (isDataReady) {
-                      mergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
+                      notifyDataProcessingDone();
                     } else {
                       isDataReady = true;
                     }
@@ -121,6 +120,16 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     }
   }
 
+  private void notifyDataProcessingDone() {
+    AllApplications allApplications =
+        mergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
+    if (allApplications != null) {
+      notifyOnSuccess(allApplications);
+    } else {
+      notifyOnError();
+    }
+  }
+
   private AllApplications mergeData(List<ApplicationInfoStruct> applicationInfoStructListCache,
       List<ApplicationInfoStruct> applicationInfoStructListAidl) {
     long totalCacheSize = 0;
@@ -129,15 +138,16 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     long totalCacheSizeCached = 0;
     long totalApplicationsSizeCached = 0;
 
-    List<ApplicationInfoStruct> applicationInfoStructsAidl = applicationInfoStructListAidl;
-    List<ApplicationInfoStruct> applicationInfoStructsCache = new ArrayList<>();
+    List<ApplicationInfoStruct> tmpApplicationInfoStructsAidl = new ArrayList<>();
+    tmpApplicationInfoStructsAidl.addAll(applicationInfoStructListAidl);
+    List<ApplicationInfoStruct> tmpApplicationInfoStructsCache = new ArrayList<>();
+    tmpApplicationInfoStructsCache.addAll(applicationInfoStructListCache);
 
-    for (ApplicationInfoStruct applicationInfoStructAidl : applicationInfoStructListAidl) {
+    for (ApplicationInfoStruct applicationInfoStructAidl : tmpApplicationInfoStructsAidl) {
+      totalApplicationsSize += applicationInfoStructAidl.getApkSize();
+      totalCacheSize += applicationInfoStructAidl.getCacheSize();
       for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
         if (applicationInfoStructAidl.getPname().equals(applicationInfoStructCache.getPname())) {
-
-          totalApplicationsSize += applicationInfoStructAidl.getApkSize();
-          totalCacheSize += applicationInfoStructAidl.getCacheSize();
 
           totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
           totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
@@ -150,20 +160,44 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
           applicationInfoStructCache.setDataSize(sizeData);
 
-          applicationInfoStructsCache.add(applicationInfoStructCache);
+          tmpApplicationInfoStructsCache.add(applicationInfoStructCache);
           break;
         }
       }
     }
     // TODO: 14/04/2016 clear global and put false is ready
 
+    applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
+        new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
+          @Override public void onCreateDeviceApplicationListCallback(boolean success) {
+            Timber.e(String.valueOf(success));
+          }
+
+          @Override public void onError() {
+            Timber.e("Error");
+          }
+        });
+
     applicationInfoStructListAidl.clear();
     applicationInfoStructListCache.clear();
 
     isDataReady = false;
 
-    
-    return null;
+    long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
+    long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
+    int varianceNumApplications =
+        tmpApplicationInfoStructsAidl.size() - tmpApplicationInfoStructsCache.size();
+
+    return new AllApplications.Builder().setTotalNumApplications(
+        tmpApplicationInfoStructsAidl.size())
+        .setTotalSizeApplications(totalApplicationsSize)
+        .setTotalSizeCache(totalCacheSize)
+        .setListApplications(tmpApplicationInfoStructsAidl)
+        .setTotalNumApplicationsVariance(varianceNumApplications)
+        .setTotalSizeApplicationsVariance(varianceTotalSize)
+        .setTotalSizeCacheVariance(varianceCacheSize)
+        .setListApplicationsCache(tmpApplicationInfoStructsCache)
+        .build();
   }
 
   @Override public void stop() {
