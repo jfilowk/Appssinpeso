@@ -37,11 +37,14 @@ public class DeviceApplicationInstalledPresenterTest {
   @Test public void loadPackages() {
 
     ApplicationInfoStruct applicationInfoStruct =
-        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false);
+        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false,
+            applicationInfoCached);
     ApplicationInfoStruct applicationInfoStruct2 =
-        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false);
+        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false,
+            applicationInfoCached);
     ApplicationInfoStruct applicationInfoStruct3 =
-        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false);
+        new ApplicationInfoStruct("Hola", "Hola", null, "/dasd/das", 10, 10, 10, 10, false,
+            applicationInfoCached);
 
     List<ApplicationInfoStruct> applicationInfoStructList = new ArrayList<>();
     applicationInfoStructList.add(applicationInfoStruct);

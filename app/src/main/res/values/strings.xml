@@ -19,4 +19,5 @@
   <string name="no_packages_found_toast">No packages found</string>
   <string name="num_applications">Num. Applications</string>
   <string name="num">78</string>
+  <string name="example_app_variance">▴15MB</string>
 </resources>

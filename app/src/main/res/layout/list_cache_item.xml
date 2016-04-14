@@ -60,6 +60,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
+          android:gravity="center"
           android:text="@string/example_app_item"
           android:textColor="@color/colorPrimaryDark"
           />
@@ -69,6 +70,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
+          android:gravity="center"
           android:text="@string/example_cache_item"
           android:textColor="@color/colorPrimaryDark"
           />
@@ -78,7 +80,46 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
+          android:gravity="center"
           android:text="@string/example_data_item"
+          android:textColor="@color/colorPrimaryDark"
+          />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:weightSum="3"
+        android:id="@+id/variance_layout"
+        >
+
+      <TextView
+          android:id="@+id/txtApplicationSizeVariance"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:text="@string/example_app_variance"
+          android:textColor="@color/colorPrimaryDark"
+          />
+
+      <TextView
+          android:id="@+id/txtCacheSizeVariance"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:text="@string/example_app_variance"
+          android:textColor="@color/colorPrimaryDark"
+          />
+
+      <TextView
+          android:id="@+id/txtDataSizeVariance"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:text="@string/example_app_variance"
           android:textColor="@color/colorPrimaryDark"
           />
     </LinearLayout>
