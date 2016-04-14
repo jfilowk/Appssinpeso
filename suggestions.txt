@@ -1,0 +1,1 @@
+A partir del número de veces que algo no ha cambiado considerar la opción de que no usa la aplicación y que por lo tanto debería de borrarla.

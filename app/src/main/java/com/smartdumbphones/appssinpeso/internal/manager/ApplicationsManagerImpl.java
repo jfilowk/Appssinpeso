@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.support.annotation.NonNull;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoCached;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import com.smartdumbphones.appssinpeso.ui.device_applications.AppDetails;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -139,11 +142,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     long totalApplicationsSizeCached = 0;
 
     List<ApplicationInfoStruct> tmpApplicationInfoStructsAidl = new ArrayList<>();
-    tmpApplicationInfoStructsAidl.addAll(applicationInfoStructListAidl);
-    List<ApplicationInfoStruct> tmpApplicationInfoStructsCache = new ArrayList<>();
-    tmpApplicationInfoStructsCache.addAll(applicationInfoStructListCache);
 
-    for (ApplicationInfoStruct applicationInfoStructAidl : tmpApplicationInfoStructsAidl) {
+    ApplicationInfoCached applicationInfoCached = null;
+
+    for (ApplicationInfoStruct applicationInfoStructAidl : applicationInfoStructListAidl) {
       totalApplicationsSize += applicationInfoStructAidl.getApkSize();
       totalCacheSize += applicationInfoStructAidl.getCacheSize();
       for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
@@ -152,19 +154,36 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
           totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
 
+          // TODO: 14/04/2016 quitar los +5. mejorar el sistema
+
+          Random random = new Random();
+          boolean i = random.nextBoolean();
+
+          long randomLong = -1;
+          if (i) randomLong = 1;
+
+          long sizeApk =
+              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize()
+                  + randomLong;
+
           long sizeCache =
-              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
-          applicationInfoStructCache.setCacheSize(sizeCache);
+              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize()
+                  + randomLong;
 
           long sizeData =
-              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
-          applicationInfoStructCache.setDataSize(sizeData);
+              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize()
+                  + randomLong;
 
-          tmpApplicationInfoStructsCache.add(applicationInfoStructCache);
+          if (hasChanges(sizeApk, sizeCache, sizeData)) {
+            applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
+            applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
+          }
           break;
         }
       }
+      tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
     }
+
     // TODO: 14/04/2016 clear global and put false is ready
 
     applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
@@ -178,26 +197,35 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           }
         });
 
-    applicationInfoStructListAidl.clear();
-    applicationInfoStructListCache.clear();
-
-    isDataReady = false;
+    int totalNumApplicationsAidl = applicationInfoStructListAidl.size();
+    int totalNumApplicationsCache = applicationInfoStructListCache.size();
 
     long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
     long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
-    int varianceNumApplications =
-        tmpApplicationInfoStructsAidl.size() - tmpApplicationInfoStructsCache.size();
+    int varianceNumApplications = totalNumApplicationsAidl - totalNumApplicationsCache;
 
-    return new AllApplications.Builder().setTotalNumApplications(
-        tmpApplicationInfoStructsAidl.size())
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+    isDataReady = false;
+
+    return new AllApplications.Builder().setTotalNumApplications(totalNumApplicationsAidl)
         .setTotalSizeApplications(totalApplicationsSize)
         .setTotalSizeCache(totalCacheSize)
         .setListApplications(tmpApplicationInfoStructsAidl)
         .setTotalNumApplicationsVariance(varianceNumApplications)
         .setTotalSizeApplicationsVariance(varianceTotalSize)
         .setTotalSizeCacheVariance(varianceCacheSize)
-        .setListApplicationsCache(tmpApplicationInfoStructsCache)
         .build();
+  }
+
+  @NonNull private ApplicationInfoCached createApplicationInfoCached(long sizeApk, long sizeCache,
+      long sizeData) {
+    ApplicationInfoCached applicationInfoCached;
+    applicationInfoCached = new ApplicationInfoCached();
+    applicationInfoCached.setApkSize(sizeApk);
+    applicationInfoCached.setCacheSize(sizeCache);
+    applicationInfoCached.setDataSize(sizeData);
+    return applicationInfoCached;
   }
 
   @Override public void stop() {
@@ -270,5 +298,9 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     return applicationInfoStruct.getApkSize()
         + applicationInfoStruct.getCacheSize()
         + applicationInfoStruct.getDataSize();
+  }
+
+  public boolean hasChanges(long apkSize, long cacheSize, long dataSize) {
+    return !(apkSize == 0 && cacheSize == 0 && dataSize == 0);
   }
 }

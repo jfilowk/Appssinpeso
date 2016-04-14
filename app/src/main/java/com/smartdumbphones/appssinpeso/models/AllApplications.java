@@ -11,12 +11,10 @@ public class AllApplications {
   private long totalSizeApplicationsVariance;
   private long totalSizeCacheVariance;
   private List<ApplicationInfoStruct> listApplications;
-  private List<ApplicationInfoStruct> listApplicationsCache;
 
   public AllApplications(int totalNumApplications, long totalSizeApplications, long totalSizeCache,
       int totalNumApplicationsVariance, long totalSizeApplicationsVariance,
-      long totalSizeCacheVariance, List<ApplicationInfoStruct> listApplications,
-      List<ApplicationInfoStruct> listApplicationsCache) {
+      long totalSizeCacheVariance, List<ApplicationInfoStruct> listApplications) {
     this.totalNumApplications = totalNumApplications;
     this.totalSizeApplications = totalSizeApplications;
     this.totalSizeCache = totalSizeCache;
@@ -24,7 +22,6 @@ public class AllApplications {
     this.totalSizeApplicationsVariance = totalSizeApplicationsVariance;
     this.totalSizeCacheVariance = totalSizeCacheVariance;
     this.listApplications = listApplications;
-    this.listApplicationsCache = listApplicationsCache;
   }
 
   public AllApplications() {
@@ -59,10 +56,6 @@ public class AllApplications {
     return totalSizeCacheVariance;
   }
 
-  public List<ApplicationInfoStruct> getListApplicationsCache() {
-    return listApplicationsCache;
-  }
-
   public static class Builder {
     private int totalNumApplications;
     private long totalSizeApplications;
@@ -71,7 +64,6 @@ public class AllApplications {
     private long totalSizeApplicationsVariance;
     private long totalSizeCacheVariance;
     private List<ApplicationInfoStruct> listApplications;
-    private List<ApplicationInfoStruct> listApplicationsCache;
 
     public Builder setTotalNumApplications(int totalNumApplications) {
       this.totalNumApplications = totalNumApplications;
@@ -93,11 +85,6 @@ public class AllApplications {
       return this;
     }
 
-    public Builder setListApplicationsCache(List<ApplicationInfoStruct> listApplicationsCache) {
-      this.listApplicationsCache = listApplicationsCache;
-      return this;
-    }
-
     public Builder setTotalNumApplicationsVariance(int totalNumApplicationsVariance) {
       this.totalNumApplicationsVariance = totalNumApplicationsVariance;
       return this;
@@ -116,7 +103,7 @@ public class AllApplications {
     public AllApplications build() {
       return new AllApplications(totalNumApplications, totalSizeApplications, totalSizeCache,
           totalNumApplicationsVariance, totalSizeApplicationsVariance, totalSizeCacheVariance,
-          listApplications, listApplicationsCache);
+          listApplications);
     }
   }
 }

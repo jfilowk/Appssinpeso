@@ -12,12 +12,14 @@ public class ApplicationInfoStruct {
   private long dataSize = 0;
   private long totalSize = 0;
   private boolean isSystem;
+  private ApplicationInfoCached applicationInfoCached;
 
   public ApplicationInfoStruct() {
   }
 
   public ApplicationInfoStruct(String appname, String pname, Drawable icon, String datadir,
-      long apkSize, long cacheSize, long dataSize, long totalSize, boolean isSystem) {
+      long apkSize, long cacheSize, long dataSize, long totalSize, boolean isSystem,
+      ApplicationInfoCached applicationInfoCached) {
     this.appname = appname;
     this.pname = pname;
     this.icon = icon;
@@ -27,6 +29,7 @@ public class ApplicationInfoStruct {
     this.dataSize = dataSize;
     this.totalSize = totalSize;
     this.isSystem = isSystem;
+    this.applicationInfoCached = applicationInfoCached;
   }
 
   public String getAppname() {
@@ -99,6 +102,14 @@ public class ApplicationInfoStruct {
 
   public void setIsSystem(boolean isSystem) {
     this.isSystem = isSystem;
+  }
+
+  public ApplicationInfoCached getApplicationInfoCached() {
+    return applicationInfoCached;
+  }
+
+  public void setApplicationInfoCached(ApplicationInfoCached applicationInfoCached) {
+    this.applicationInfoCached = applicationInfoCached;
   }
 
   @Override public String toString() {
