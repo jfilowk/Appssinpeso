@@ -1,5 +1,6 @@
 package com.smartdumbphones.appssinpeso.internal.manager;
 
+import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
@@ -15,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
-
 import timber.log.Timber;
 
 public class ApplicationsManagerImpl implements ApplicationsManager {
@@ -24,16 +24,27 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private OnApplicationsListener listener;
   private AppDetails appDetails;
   private PackageManager packageManager;
+  private Context context;
+  private ApplicationInfoStructRepository applicationInfoStructRepository;
+
+  private List<ApplicationInfoStruct> applicationInfoStructListAidl;
+  private List<ApplicationInfoStruct> applicationInfoStructListCache;
+  private boolean isDataReady = false;
 
   private MainThread mainThread;
 
   @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
-      ExecutorService executorService, PackageManager packageManager) {
+      ExecutorService executorService, PackageManager packageManager, Context context,
+      ApplicationInfoStructRepository applicationInfoStructRepository) {
     this.appDetails = appDetails;
     // TODO: singlenton? never destroyed?
     this.executorService = executorService;
     this.mainThread = mainThread;
     this.packageManager = packageManager;
+    this.context = context;
+    this.applicationInfoStructRepository = applicationInfoStructRepository;
+    this.applicationInfoStructListAidl = new ArrayList<>();
+    this.applicationInfoStructListCache = new ArrayList<>();
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -61,10 +72,17 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                     new CachePackState(new CachePackState.Callback() {
                       @Override public void onSuccess(PackageStats stats) {
                         listPackageStats.add(stats);
+                        // TODO: 13/04/2016 Extract this eventbus
                         if (isFinishedProcess(listApplications.size(), listPackageStats.size())) {
-                          AllApplications allApplications =
-                              mergeData(listApplications, listPackageStats);
-                          notifyOnSuccess(allApplications);
+                          //stop, return
+                          applicationInfoStructListAidl =
+                              generateAllApplicationsAidl(listApplications, listPackageStats);
+                          //notify when finish
+                          if (isDataReady) {
+                            notifyDataProcessingDone();
+                          } else {
+                            isDataReady = true;
+                          }
                         }
                       }
                     }));
@@ -76,7 +94,110 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           }
         }
       });
+
+      executorService.submit(new Runnable() {
+        @Override public void run() {
+          applicationInfoStructRepository.getDeviceApplicationList(
+              new ApplicationInfoStructRepository.DeviceApplicationListCallback() {
+                @Override public void onDeviceApplicationList(
+                    List<ApplicationInfoStruct> applicationInfoStructList) {
+                  if (applicationInfoStructList != null) {
+                    applicationInfoStructListCache = applicationInfoStructList;
+                    if (isDataReady) {
+                      notifyDataProcessingDone();
+                    } else {
+                      isDataReady = true;
+                    }
+                  }
+                }
+
+                @Override public void onError() {
+                  Timber.e("error");
+                }
+              });
+        }
+      });
     }
+  }
+
+  private void notifyDataProcessingDone() {
+    AllApplications allApplications =
+        mergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
+    if (allApplications != null) {
+      notifyOnSuccess(allApplications);
+    } else {
+      notifyOnError();
+    }
+  }
+
+  private AllApplications mergeData(List<ApplicationInfoStruct> applicationInfoStructListCache,
+      List<ApplicationInfoStruct> applicationInfoStructListAidl) {
+    long totalCacheSize = 0;
+    long totalApplicationsSize = 0;
+
+    long totalCacheSizeCached = 0;
+    long totalApplicationsSizeCached = 0;
+
+    List<ApplicationInfoStruct> tmpApplicationInfoStructsAidl = new ArrayList<>();
+    tmpApplicationInfoStructsAidl.addAll(applicationInfoStructListAidl);
+    List<ApplicationInfoStruct> tmpApplicationInfoStructsCache = new ArrayList<>();
+    tmpApplicationInfoStructsCache.addAll(applicationInfoStructListCache);
+
+    for (ApplicationInfoStruct applicationInfoStructAidl : tmpApplicationInfoStructsAidl) {
+      totalApplicationsSize += applicationInfoStructAidl.getApkSize();
+      totalCacheSize += applicationInfoStructAidl.getCacheSize();
+      for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
+        if (applicationInfoStructAidl.getPname().equals(applicationInfoStructCache.getPname())) {
+
+          totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
+          totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
+
+          long sizeCache =
+              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
+          applicationInfoStructCache.setCacheSize(sizeCache);
+
+          long sizeData =
+              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
+          applicationInfoStructCache.setDataSize(sizeData);
+
+          tmpApplicationInfoStructsCache.add(applicationInfoStructCache);
+          break;
+        }
+      }
+    }
+    // TODO: 14/04/2016 clear global and put false is ready
+
+    applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
+        new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
+          @Override public void onCreateDeviceApplicationListCallback(boolean success) {
+            Timber.e(String.valueOf(success));
+          }
+
+          @Override public void onError() {
+            Timber.e("Error");
+          }
+        });
+
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+
+    isDataReady = false;
+
+    long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
+    long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
+    int varianceNumApplications =
+        tmpApplicationInfoStructsAidl.size() - tmpApplicationInfoStructsCache.size();
+
+    return new AllApplications.Builder().setTotalNumApplications(
+        tmpApplicationInfoStructsAidl.size())
+        .setTotalSizeApplications(totalApplicationsSize)
+        .setTotalSizeCache(totalCacheSize)
+        .setListApplications(tmpApplicationInfoStructsAidl)
+        .setTotalNumApplicationsVariance(varianceNumApplications)
+        .setTotalSizeApplicationsVariance(varianceTotalSize)
+        .setTotalSizeCacheVariance(varianceCacheSize)
+        .setListApplicationsCache(tmpApplicationInfoStructsCache)
+        .build();
   }
 
   @Override public void stop() {
@@ -87,33 +208,26 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     return listApplicationsSize == listPackageStatsSize;
   }
 
-  private AllApplications mergeData(List<ApplicationInfoStruct> listApplications,
-      List<PackageStats> listPackageStats) {
+  private List<ApplicationInfoStruct> generateAllApplicationsAidl(
+      List<ApplicationInfoStruct> listApplications, List<PackageStats> listPackageStats) {
 
-    long totalCacheSize = 0;
-    long totalApplicationSize = 0;
     List<ApplicationInfoStruct> applicationInfoStructList =
         new ArrayList<>(listApplications.size());
 
     for (ApplicationInfoStruct listApplication : listApplications) {
       for (PackageStats listPackageStat : listPackageStats) {
         if (listApplication.getPname().equals(listPackageStat.packageName)) {
+
           addSizesApplication(listPackageStat, listApplication);
 
           applicationInfoStructList.add(listApplication);
-          totalCacheSize += listPackageStat.cacheSize + listPackageStat.externalCacheSize;
-          totalApplicationSize += listPackageStat.codeSize;
 
           break;
         }
       }
     }
 
-    return new AllApplications.Builder().setTotalNumApplications(applicationInfoStructList.size())
-        .setTotalSizeApplications(totalApplicationSize)
-        .setTotalSizeCache(totalCacheSize)
-        .setListApplications(applicationInfoStructList)
-        .build();
+    return applicationInfoStructList;
   }
 
   private void notifyOnSuccess(final AllApplications allApplications) {
@@ -149,10 +263,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     applicationInfoStruct.setApkSize(pStats.codeSize);
     applicationInfoStruct.setCacheSize(pStats.cacheSize + pStats.externalCacheSize);
     applicationInfoStruct.setDataSize(pStats.dataSize + pStats.externalDataSize);
-    applicationInfoStruct.setTotalSize(sumSizes(applicationInfoStruct));
+    applicationInfoStruct.setTotalSize(sumTotalSize(applicationInfoStruct));
   }
 
-  private long sumSizes(ApplicationInfoStruct applicationInfoStruct) {
+  private long sumTotalSize(ApplicationInfoStruct applicationInfoStruct) {
     return applicationInfoStruct.getApkSize()
         + applicationInfoStruct.getCacheSize()
         + applicationInfoStruct.getDataSize();
