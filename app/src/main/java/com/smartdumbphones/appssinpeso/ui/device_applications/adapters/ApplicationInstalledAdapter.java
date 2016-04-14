@@ -18,16 +18,20 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
 
   private static final int TYPE_HEADER = 100;
   private static final int TYPE_ROW = 200;
-  private List<ApplicationInfoStruct> listApplication;
   // FIXME: REVIEW
   private static Context context;
+  private List<ApplicationInfoStruct> listApplication;
+  private List<ApplicationInfoStruct> listApplicationVariance;
   private AllApplications allApplications;
-
 
   public ApplicationInstalledAdapter(Context context, AllApplications allApplications) {
     ApplicationInstalledAdapter.context = context;
     this.allApplications = allApplications;
     this.listApplication = allApplications.getListApplications();
+  }
+
+  private static String getSizeHumanReadbeable(long size) {
+    return android.text.format.Formatter.formatShortFileSize(context, size);
   }
 
   public void refreshData(AllApplications allApplications) {
@@ -37,7 +41,63 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
     notifyDataSetChanged();
   }
 
+  @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    if (viewType == TYPE_HEADER) {
+      View itemView = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.list_cache_header_item, parent, false);
+      return new HeaderViewHolder(itemView);
+    } else {
+      View itemView =
+          LayoutInflater.from(parent.getContext()).inflate(R.layout.list_cache_item, parent, false);
+      return new RowViewHolder(itemView);
+    }
+  }
+
+  @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    if (holder instanceof HeaderViewHolder) {
+      ((HeaderViewHolder) holder).bindAllApplications(allApplications, position);
+    } else if (holder instanceof RowViewHolder) {
+      ApplicationInfoStruct applicationInfoStruct = getApplicationInfoStruct(position);
+      ((RowViewHolder) holder).bindApplicationInfo(applicationInfoStruct);
+    }
+  }
+
+  @Override public int getItemCount() {
+    return listApplication == null || allApplications == null ? 0
+        : listApplication.size() + ItemTypes.values().length;
+  }
+
+  @Override public int getItemViewType(int position) {
+    if (position == ItemTypes.HEADER_NUM.getValue() || position == ItemTypes.HEADER_ALL_APPLICATIONS
+        .getValue() || position == ItemTypes.HEADER_CACHE.getValue()) {
+      return TYPE_HEADER;
+    }
+    return TYPE_ROW;
+  }
+
+  private ApplicationInfoStruct getApplicationInfoStruct(int position) {
+    return listApplication.get(position - 3);
+  }
+
+  enum ItemTypes {
+    HEADER_NUM(0),
+    HEADER_ALL_APPLICATIONS(1),
+    HEADER_CACHE(2);
+
+    private int value;
+
+    ItemTypes(int value) {
+      this.value = value;
+    }
+
+    public int getValue() {
+      return value;
+    }
+
+  }
+
   public static class RowViewHolder extends RecyclerView.ViewHolder {
+
     @Bind(R.id.txtApplication) TextView txtNameApplication;
     @Bind(R.id.txtApplicationSize) TextView txtAppSize;
     @Bind(R.id.txtCacheSize) TextView txtCacheSize;
@@ -68,10 +128,11 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
   }
-
+  
   public static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.lblHeaderName) TextView lblHeaderName;
+
     @Bind(R.id.lblHeaderValue) TextView lblHeaderSize;
     @Bind(R.id.separator) View separator;
 
@@ -95,63 +156,5 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
         separator.setVisibility(View.VISIBLE);
       }
     }
-  }
-
-  @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    if (viewType == TYPE_HEADER) {
-      View itemView = LayoutInflater.from(parent.getContext())
-          .inflate(R.layout.list_cache_header_item, parent, false);
-      return new HeaderViewHolder(itemView);
-    } else {
-      View itemView =
-          LayoutInflater.from(parent.getContext()).inflate(R.layout.list_cache_item, parent, false);
-      return new RowViewHolder(itemView);
-    }
-  }
-
-  @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof HeaderViewHolder) {
-      ((HeaderViewHolder) holder).bindAllApplications(allApplications, position);
-    } else if (holder instanceof RowViewHolder) {
-      ApplicationInfoStruct applicationInfoStruct = getApplicationInfoStruct(position);
-      ((RowViewHolder) holder).bindApplicationInfo(applicationInfoStruct);
-    }
-  }
-
-  @Override public int getItemCount() {
-    return listApplication == null || allApplications == null ? 0
-        : listApplication.size() + ItemTypes.values().length;
-  }
-
-  enum ItemTypes {
-    HEADER_NUM(0),
-    HEADER_ALL_APPLICATIONS(1),
-    HEADER_CACHE(2);
-
-    private int value;
-
-    ItemTypes(int value) {
-      this.value = value;
-    }
-
-    public int getValue() {
-      return value;
-    }
-  }
-
-  @Override public int getItemViewType(int position) {
-    if (position == ItemTypes.HEADER_NUM.getValue() || position == ItemTypes.HEADER_ALL_APPLICATIONS
-        .getValue() || position == ItemTypes.HEADER_CACHE.getValue()) {
-      return TYPE_HEADER;
-    }
-    return TYPE_ROW;
-  }
-
-  private ApplicationInfoStruct getApplicationInfoStruct(int position) {
-    return listApplication.get(position - 3);
-  }
-
-  private static String getSizeHumanReadbeable(long size) {
-    return android.text.format.Formatter.formatShortFileSize(context, size);
   }
 }

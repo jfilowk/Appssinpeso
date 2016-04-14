@@ -143,6 +143,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     List<ApplicationInfoStruct> tmpApplicationInfoStructsCache = new ArrayList<>();
     tmpApplicationInfoStructsCache.addAll(applicationInfoStructListCache);
 
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+    isDataReady = false;
+
     for (ApplicationInfoStruct applicationInfoStructAidl : tmpApplicationInfoStructsAidl) {
       totalApplicationsSize += applicationInfoStructAidl.getApkSize();
       totalCacheSize += applicationInfoStructAidl.getCacheSize();
@@ -178,18 +182,14 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           }
         });
 
-    applicationInfoStructListAidl.clear();
-    applicationInfoStructListCache.clear();
-
-    isDataReady = false;
+    int totalNumApplicationsAidl = tmpApplicationInfoStructsAidl.size();
+    int totalNumApplicationsCache = tmpApplicationInfoStructsCache.size();
 
     long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
     long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
-    int varianceNumApplications =
-        tmpApplicationInfoStructsAidl.size() - tmpApplicationInfoStructsCache.size();
+    int varianceNumApplications = totalNumApplicationsAidl - totalNumApplicationsCache;
 
-    return new AllApplications.Builder().setTotalNumApplications(
-        tmpApplicationInfoStructsAidl.size())
+    return new AllApplications.Builder().setTotalNumApplications(totalNumApplicationsAidl)
         .setTotalSizeApplications(totalApplicationsSize)
         .setTotalSizeCache(totalCacheSize)
         .setListApplications(tmpApplicationInfoStructsAidl)
