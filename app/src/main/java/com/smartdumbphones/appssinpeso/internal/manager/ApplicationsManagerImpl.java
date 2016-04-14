@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.support.annotation.NonNull;
 import com.smartdumbphones.appssinpeso.internal.domain.MainThread;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoCached;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import com.smartdumbphones.appssinpeso.ui.device_applications.AppDetails;
 import java.lang.reflect.InvocationTargetException;
@@ -139,15 +141,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     long totalApplicationsSizeCached = 0;
 
     List<ApplicationInfoStruct> tmpApplicationInfoStructsAidl = new ArrayList<>();
-    tmpApplicationInfoStructsAidl.addAll(applicationInfoStructListAidl);
-    List<ApplicationInfoStruct> tmpApplicationInfoStructsCache = new ArrayList<>();
-    tmpApplicationInfoStructsCache.addAll(applicationInfoStructListCache);
 
-    applicationInfoStructListAidl.clear();
-    applicationInfoStructListCache.clear();
-    isDataReady = false;
+    ApplicationInfoCached applicationInfoCached = null;
 
-    for (ApplicationInfoStruct applicationInfoStructAidl : tmpApplicationInfoStructsAidl) {
+    for (ApplicationInfoStruct applicationInfoStructAidl : applicationInfoStructListAidl) {
       totalApplicationsSize += applicationInfoStructAidl.getApkSize();
       totalCacheSize += applicationInfoStructAidl.getCacheSize();
       for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
@@ -155,6 +152,9 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
           totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
           totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
+
+          long sizeApk =
+              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize();
 
           long sizeCache =
               applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
@@ -164,11 +164,19 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
               applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
           applicationInfoStructCache.setDataSize(sizeData);
 
-          tmpApplicationInfoStructsCache.add(applicationInfoStructCache);
+          applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
+
+          applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
+
+          tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
           break;
         }
       }
     }
+
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+    isDataReady = false;
     // TODO: 14/04/2016 clear global and put false is ready
 
     applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
@@ -182,8 +190,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           }
         });
 
-    int totalNumApplicationsAidl = tmpApplicationInfoStructsAidl.size();
-    int totalNumApplicationsCache = tmpApplicationInfoStructsCache.size();
+    int totalNumApplicationsAidl = applicationInfoStructListAidl.size();
+    int totalNumApplicationsCache = applicationInfoStructListCache.size();
 
     long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
     long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
@@ -196,8 +204,17 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         .setTotalNumApplicationsVariance(varianceNumApplications)
         .setTotalSizeApplicationsVariance(varianceTotalSize)
         .setTotalSizeCacheVariance(varianceCacheSize)
-        .setListApplicationsCache(tmpApplicationInfoStructsCache)
         .build();
+  }
+
+  @NonNull private ApplicationInfoCached createApplicationInfoCached(long sizeApk, long sizeCache,
+      long sizeData) {
+    ApplicationInfoCached applicationInfoCached;
+    applicationInfoCached = new ApplicationInfoCached();
+    applicationInfoCached.setApkSize(sizeApk);
+    applicationInfoCached.setCacheSize(sizeCache);
+    applicationInfoCached.setDataSize(sizeData);
+    return applicationInfoCached;
   }
 
   @Override public void stop() {

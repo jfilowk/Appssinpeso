@@ -128,11 +128,10 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
     }
   }
-  
+
   public static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.lblHeaderName) TextView lblHeaderName;
-
     @Bind(R.id.lblHeaderValue) TextView lblHeaderSize;
     @Bind(R.id.separator) View separator;
 
