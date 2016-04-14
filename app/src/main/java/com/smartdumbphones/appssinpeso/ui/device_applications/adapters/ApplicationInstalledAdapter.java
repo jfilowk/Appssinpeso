@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoCached;
 import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import java.util.List;
 
@@ -104,6 +106,10 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
     @Bind(R.id.txtDataSize) TextView txtDataSize;
     @Bind(R.id.txtTotalSize) TextView txtTotalSize;
     @Bind(R.id.iconApplication) ImageView imgIcon;
+    @Bind(R.id.variance_layout) LinearLayout varianceLinearLayout;
+    @Bind(R.id.txtApplicationSizeVariance) TextView txtAppSizeVariance;
+    @Bind(R.id.txtCacheSizeVariance) TextView txtCacheSizeVariance;
+    @Bind(R.id.txtDataSizeVariance) TextView txtDataSizeVariance;
 
     public RowViewHolder(View itemView) {
       super(itemView);
@@ -126,6 +132,18 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
       }
       txtTotalSize.setText(getSizeHumanReadbeable(applicationInfoStruct.getTotalSize()));
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
+
+      ApplicationInfoCached applicationInfoCached =
+          applicationInfoStruct.getApplicationInfoCached();
+      // TODO: 14/04/2016 method to indentify positive or negative
+      if (applicationInfoCached != null) {
+        varianceLinearLayout.setVisibility(View.VISIBLE);
+        txtAppSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getApkSize()));
+        txtCacheSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getCacheSize()));
+        txtDataSizeVariance.setText(getSizeHumanReadbeable(applicationInfoCached.getDataSize()));
+      } else {
+        varianceLinearLayout.setVisibility(View.GONE);
+      }
     }
   }
 

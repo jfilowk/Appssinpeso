@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -154,16 +155,24 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
 
           // TODO: 14/04/2016 quitar los +5. mejorar el sistema
+
+          Random random = new Random();
+          boolean i = random.nextBoolean();
+
+          long randomLong = 0;
+          if (i) randomLong = 1;
+
           long sizeApk =
-              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize() + 5;
+              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize()
+                  + randomLong;
 
           long sizeCache =
               applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize()
-                  + 5;
+                  + randomLong;
 
           long sizeData =
               applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize()
-                  + 5;
+                  + randomLong;
 
           if (hasChanges(sizeApk, sizeCache, sizeData)) {
             applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
@@ -176,9 +185,6 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
       }
     }
 
-    applicationInfoStructListAidl.clear();
-    applicationInfoStructListCache.clear();
-    isDataReady = false;
     // TODO: 14/04/2016 clear global and put false is ready
 
     applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
@@ -198,6 +204,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     long varianceTotalSize = totalApplicationsSize - totalApplicationsSizeCached;
     long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
     int varianceNumApplications = totalNumApplicationsAidl - totalNumApplicationsCache;
+
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+    isDataReady = false;
 
     return new AllApplications.Builder().setTotalNumApplications(totalNumApplicationsAidl)
         .setTotalSizeApplications(totalApplicationsSize)
