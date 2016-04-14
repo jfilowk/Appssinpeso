@@ -186,7 +186,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
       }
       tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
     }
-    
+
+    // TODO: check if false system
     applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
         new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
           @Override public void onCreateDeviceApplicationListCallback(boolean success) {
