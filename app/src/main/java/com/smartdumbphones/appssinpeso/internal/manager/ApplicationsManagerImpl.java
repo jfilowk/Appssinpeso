@@ -178,11 +178,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
             applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
             applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
           }
-
-          tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
           break;
         }
       }
+      tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
     }
 
     // TODO: 14/04/2016 clear global and put false is ready
