@@ -27,6 +27,10 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private Context context;
   private ApplicationInfoStructRepository applicationInfoStructRepository;
 
+  private List<ApplicationInfoStruct> applicationInfoStructListAidl;
+  private List<ApplicationInfoStruct> applicationInfoStructListCache;
+  private boolean isDataReady = false;
+
   private MainThread mainThread;
 
   @Inject public ApplicationsManagerImpl(MainThread mainThread, AppDetails appDetails,
@@ -39,6 +43,8 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     this.packageManager = packageManager;
     this.context = context;
     this.applicationInfoStructRepository = applicationInfoStructRepository;
+    this.applicationInfoStructListAidl = new ArrayList<>();
+    this.applicationInfoStructListCache = new ArrayList<>();
   }
 
   @Override public void attachOnApplicationListener(OnApplicationsListener listener) {
@@ -69,10 +75,15 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                         // TODO: 13/04/2016 Extract this eventbus
                         if (isFinishedProcess(listApplications.size(), listPackageStats.size())) {
                           //stop, return
-                          AllApplications allApplications =
+                          applicationInfoStructListAidl =
                               generateAllApplicationsAidl(listApplications, listPackageStats);
                           //notify when finish
-                          notifyOnSuccess(allApplications);
+                          if (isDataReady) {
+                            mergeData(applicationInfoStructListCache,
+                                applicationInfoStructListAidl);
+                          } else {
+                            isDataReady = true;
+                          }
                         }
                       }
                     }));
@@ -92,7 +103,12 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
                 @Override public void onDeviceApplicationList(
                     List<ApplicationInfoStruct> applicationInfoStructList) {
                   if (applicationInfoStructList != null) {
-
+                    applicationInfoStructListCache = applicationInfoStructList;
+                    if (isDataReady) {
+                      mergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
+                    } else {
+                      isDataReady = true;
+                    }
                   }
                 }
 
@@ -105,6 +121,51 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     }
   }
 
+  private AllApplications mergeData(List<ApplicationInfoStruct> applicationInfoStructListCache,
+      List<ApplicationInfoStruct> applicationInfoStructListAidl) {
+    long totalCacheSize = 0;
+    long totalApplicationsSize = 0;
+
+    long totalCacheSizeCached = 0;
+    long totalApplicationsSizeCached = 0;
+
+    List<ApplicationInfoStruct> applicationInfoStructsAidl = applicationInfoStructListAidl;
+    List<ApplicationInfoStruct> applicationInfoStructsCache = new ArrayList<>();
+
+    for (ApplicationInfoStruct applicationInfoStructAidl : applicationInfoStructListAidl) {
+      for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
+        if (applicationInfoStructAidl.getPname().equals(applicationInfoStructCache.getPname())) {
+
+          totalApplicationsSize += applicationInfoStructAidl.getApkSize();
+          totalCacheSize += applicationInfoStructAidl.getCacheSize();
+
+          totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
+          totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
+
+          long sizeCache =
+              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
+          applicationInfoStructCache.setCacheSize(sizeCache);
+
+          long sizeData =
+              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
+          applicationInfoStructCache.setDataSize(sizeData);
+
+          applicationInfoStructsCache.add(applicationInfoStructCache);
+          break;
+        }
+      }
+    }
+    // TODO: 14/04/2016 clear global and put false is ready
+
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+
+    isDataReady = false;
+
+    
+    return null;
+  }
+
   @Override public void stop() {
     listener = null;
   }
@@ -113,49 +174,26 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     return listApplicationsSize == listPackageStatsSize;
   }
 
-  private AllApplications generateAllApplicationsCache(
-      List<ApplicationInfoStruct> applicationInfoStructList) {
-    long totalCacheSize = 0;
-    long totalApplicationSize = 0;
-    for (ApplicationInfoStruct applicationInfoStruct : applicationInfoStructList) {
-      totalCacheSize += applicationInfoStruct.getCacheSize();
-      totalApplicationSize += applicationInfoStruct.getApkSize();
-    }
+  private List<ApplicationInfoStruct> generateAllApplicationsAidl(
+      List<ApplicationInfoStruct> listApplications, List<PackageStats> listPackageStats) {
 
-    int totalNumApplications = applicationInfoStructList.size();
-    return new AllApplications.Builder().setTotalNumApplications(totalNumApplications)
-        .setTotalSizeApplications(totalApplicationSize)
-        .setTotalSizeCache(totalCacheSize)
-        .setListApplications(applicationInfoStructList)
-        .build();
-  }
-
-  private AllApplications generateAllApplicationsAidl(List<ApplicationInfoStruct> listApplications,
-      List<PackageStats> listPackageStats) {
-    long totalCacheSize = 0;
-    long totalApplicationSize = 0;
     List<ApplicationInfoStruct> applicationInfoStructList =
         new ArrayList<>(listApplications.size());
 
     for (ApplicationInfoStruct listApplication : listApplications) {
       for (PackageStats listPackageStat : listPackageStats) {
         if (listApplication.getPname().equals(listPackageStat.packageName)) {
+
           addSizesApplication(listPackageStat, listApplication);
 
           applicationInfoStructList.add(listApplication);
-          totalCacheSize += listPackageStat.cacheSize + listPackageStat.externalCacheSize;
-          totalApplicationSize += listPackageStat.codeSize;
 
           break;
         }
       }
     }
 
-    return new AllApplications.Builder().setTotalNumApplications(applicationInfoStructList.size())
-        .setTotalSizeApplications(totalApplicationSize)
-        .setTotalSizeCache(totalCacheSize)
-        .setListApplications(applicationInfoStructList)
-        .build();
+    return applicationInfoStructList;
   }
 
   private void notifyOnSuccess(final AllApplications allApplications) {
