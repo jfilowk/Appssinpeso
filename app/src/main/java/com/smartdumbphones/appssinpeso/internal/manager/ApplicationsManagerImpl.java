@@ -57,15 +57,19 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   // TODO: Add size photos
   @Override public void start(final boolean getSystemPackages) {
     if (this.listener != null) {
+      // TODO: sacar en dos task para execute
       executorService.submit(new Runnable() {
         @Override public void run() {
+
           final List<ApplicationInfoStruct> listApplications =
               appDetails.getPackages(getSystemPackages);
 
           if (listApplications.size() == 0) {
             notifyOnError();
           } else {
+
             sortPackagesAlpha(listApplications);
+
             final List<PackageStats> listPackageStats = new ArrayList<>(listApplications.size());
             for (ApplicationInfoStruct aPackage : listApplications) {
               try {
@@ -126,6 +130,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   private void notifyDataProcessingDone() {
     AllApplications allApplications =
         mergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
+
     if (allApplications != null) {
       notifyOnSuccess(allApplications);
     } else {
@@ -143,12 +148,15 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
     List<ApplicationInfoStruct> tmpApplicationInfoStructsAidl = new ArrayList<>();
 
-    ApplicationInfoCached applicationInfoCached = null;
+    ApplicationInfoCached applicationInfoCached;
 
     for (ApplicationInfoStruct applicationInfoStructAidl : applicationInfoStructListAidl) {
+
       totalApplicationsSize += applicationInfoStructAidl.getApkSize();
       totalCacheSize += applicationInfoStructAidl.getCacheSize();
+
       for (ApplicationInfoStruct applicationInfoStructCache : applicationInfoStructListCache) {
+
         if (applicationInfoStructAidl.getPname().equals(applicationInfoStructCache.getPname())) {
 
           totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
@@ -156,36 +164,29 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
 
           // TODO: 14/04/2016 quitar los +5. mejorar el sistema
 
-          Random random = new Random();
-          boolean i = random.nextBoolean();
+          long randomLong = getRandomLong();
 
-          long randomLong = -1;
-          if (i) randomLong = 1;
-
-          long sizeApk =
-              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize()
-                  + randomLong;
+          long sizeApk = getSizeApkVariance(applicationInfoStructAidl, applicationInfoStructCache)
+              + randomLong;
 
           long sizeCache =
-              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize()
+              getSizeCacheVariance(applicationInfoStructAidl, applicationInfoStructCache)
                   + randomLong;
 
-          long sizeData =
-              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize()
-                  + randomLong;
+          long sizeData = getSizeDataVariance(applicationInfoStructAidl, applicationInfoStructCache)
+              + randomLong;
 
           if (hasChanges(sizeApk, sizeCache, sizeData)) {
             applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
             applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
           }
+
           break;
         }
       }
       tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
     }
-
-    // TODO: 14/04/2016 clear global and put false is ready
-
+    
     applicationInfoStructRepository.createDeviceApplicationList(tmpApplicationInfoStructsAidl,
         new ApplicationInfoStructRepository.CreateDeviceApplicationListCallback() {
           @Override public void onCreateDeviceApplicationListCallback(boolean success) {
@@ -204,9 +205,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     long varianceCacheSize = totalCacheSize - totalCacheSizeCached;
     int varianceNumApplications = totalNumApplicationsAidl - totalNumApplicationsCache;
 
-    applicationInfoStructListAidl.clear();
-    applicationInfoStructListCache.clear();
-    isDataReady = false;
+    resetApplicationManagerMergeData(applicationInfoStructListCache, applicationInfoStructListAidl);
 
     return new AllApplications.Builder().setTotalNumApplications(totalNumApplicationsAidl)
         .setTotalSizeApplications(totalApplicationsSize)
@@ -216,6 +215,38 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
         .setTotalSizeApplicationsVariance(varianceTotalSize)
         .setTotalSizeCacheVariance(varianceCacheSize)
         .build();
+  }
+
+  private void resetApplicationManagerMergeData(
+      List<ApplicationInfoStruct> applicationInfoStructListCache,
+      List<ApplicationInfoStruct> applicationInfoStructListAidl) {
+    applicationInfoStructListAidl.clear();
+    applicationInfoStructListCache.clear();
+    isDataReady = false;
+  }
+
+  private long getSizeDataVariance(ApplicationInfoStruct applicationInfoStructAidl,
+      ApplicationInfoStruct applicationInfoStructCache) {
+    return applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
+  }
+
+  private long getSizeCacheVariance(ApplicationInfoStruct applicationInfoStructAidl,
+      ApplicationInfoStruct applicationInfoStructCache) {
+    return applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
+  }
+
+  private long getSizeApkVariance(ApplicationInfoStruct applicationInfoStructAidl,
+      ApplicationInfoStruct applicationInfoStructCache) {
+    return applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize();
+  }
+
+  private long getRandomLong() {
+    Random random = new Random();
+    boolean i = random.nextBoolean();
+
+    long randomLong = -1;
+    if (i) randomLong = 1;
+    return randomLong;
   }
 
   @NonNull private ApplicationInfoCached createApplicationInfoCached(long sizeApk, long sizeCache,
