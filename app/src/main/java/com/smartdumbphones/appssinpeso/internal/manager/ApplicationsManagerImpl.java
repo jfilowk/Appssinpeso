@@ -153,20 +153,22 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
           totalApplicationsSizeCached += applicationInfoStructCache.getApkSize();
           totalCacheSizeCached += applicationInfoStructCache.getCacheSize();
 
+          // TODO: 14/04/2016 quitar los +5. mejorar el sistema
           long sizeApk =
-              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize();
+              applicationInfoStructAidl.getApkSize() - applicationInfoStructCache.getApkSize() + 5;
 
           long sizeCache =
-              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize();
-          applicationInfoStructCache.setCacheSize(sizeCache);
+              applicationInfoStructAidl.getCacheSize() - applicationInfoStructCache.getCacheSize()
+                  + 5;
 
           long sizeData =
-              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize();
-          applicationInfoStructCache.setDataSize(sizeData);
+              applicationInfoStructAidl.getDataSize() - applicationInfoStructCache.getDataSize()
+                  + 5;
 
-          applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
-
-          applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
+          if (hasChanges(sizeApk, sizeCache, sizeData)) {
+            applicationInfoCached = createApplicationInfoCached(sizeApk, sizeCache, sizeData);
+            applicationInfoStructAidl.setApplicationInfoCached(applicationInfoCached);
+          }
 
           tmpApplicationInfoStructsAidl.add(applicationInfoStructAidl);
           break;
@@ -287,5 +289,9 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     return applicationInfoStruct.getApkSize()
         + applicationInfoStruct.getCacheSize()
         + applicationInfoStruct.getDataSize();
+  }
+
+  public boolean hasChanges(long apkSize, long cacheSize, long dataSize) {
+    return !(apkSize == 0 && cacheSize == 0 && dataSize == 0);
   }
 }
