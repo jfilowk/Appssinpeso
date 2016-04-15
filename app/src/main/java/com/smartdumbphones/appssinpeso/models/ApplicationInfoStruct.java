@@ -28,7 +28,7 @@ public class ApplicationInfoStruct {
     this.cacheSize = cacheSize;
     this.dataSize = dataSize;
     this.totalSize = totalSize;
-    this.isSystem = isSystem;
+    this.isSystem = false;
     this.applicationInfoCached = applicationInfoCached;
   }
 

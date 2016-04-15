@@ -56,6 +56,26 @@ public class AllApplications {
     return totalSizeCacheVariance;
   }
 
+  public void recalculateTotals() {
+
+    long totalCacheSize = 0;
+    long totalApplicationsSize = 0;
+
+    for (ApplicationInfoStruct listApplication : listApplications) {
+      totalApplicationsSize += listApplication.getApkSize();
+      totalCacheSize += listApplication.getCacheSize();
+    }
+
+    this.totalNumApplications = this.listApplications.size();
+    this.totalSizeApplications = totalApplicationsSize;
+    this.totalSizeCache = totalCacheSize;
+
+  }
+
+  public void setListApplications(List<ApplicationInfoStruct> listApplications) {
+    this.listApplications = listApplications;
+  }
+
   public static class Builder {
     private int totalNumApplications;
     private long totalSizeApplications;

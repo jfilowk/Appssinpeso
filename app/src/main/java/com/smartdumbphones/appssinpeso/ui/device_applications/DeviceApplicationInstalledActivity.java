@@ -15,23 +15,25 @@ import com.smartdumbphones.appssinpeso.R;
 import com.smartdumbphones.appssinpeso.internal.di.component.DaggerInstalledComponent;
 import com.smartdumbphones.appssinpeso.internal.di.component.InstalledComponent;
 import com.smartdumbphones.appssinpeso.models.AllApplications;
+import com.smartdumbphones.appssinpeso.models.ApplicationInfoStruct;
 import com.smartdumbphones.appssinpeso.ui.BaseActivity;
 import com.smartdumbphones.appssinpeso.ui.device_applications.adapters.ApplicationInstalledAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 public class DeviceApplicationInstalledActivity extends BaseActivity
     implements DeviceApplicationInstalledPresenter.DeviceApplicationInstalledView {
 
   @Bind(R.id.recycler_list) RecyclerView recyclerList;
-
-  private ProgressDialog progressDialog;
-  private ApplicationInstalledAdapter adapter;
-
   @Inject DeviceApplicationInstalledPresenter presenter;
   @Inject Context context;
-
+  private ProgressDialog progressDialog;
+  private ApplicationInstalledAdapter adapter;
   private InstalledComponent component;
+
   private AllApplications allApplications;
+  private List<ApplicationInfoStruct> applicationInfoStructList;
 
   private boolean showSystemPackage = true;
 
@@ -41,6 +43,7 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
     ButterKnife.bind(this);
 
     this.allApplications = new AllApplications();
+    applicationInfoStructList = new ArrayList<>();
 
     recyclerList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -92,7 +95,11 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
         onBackPressed();
         break;
       case R.id.display_system_apps:
-        presenter.filterSystemPackage(showSystemPackage);
+        if (showSystemPackage) {
+          presenter.filterSystemPackage();
+        } else {
+          presenter.filterSystemPackage();
+        }
         break;
     }
     return true;
@@ -108,11 +115,38 @@ public class DeviceApplicationInstalledActivity extends BaseActivity
 
   @Override public void displayListCache(final AllApplications allApplications) {
     this.allApplications = allApplications;
+    this.applicationInfoStructList.addAll(allApplications.getListApplications());
     if (adapter == null) {
       adapter = new ApplicationInstalledAdapter(context, this.allApplications);
       recyclerList.setAdapter(adapter);
     } else {
       adapter.refreshData(this.allApplications);
+    }
+  }
+
+  @Override public void filterSystemApplications() {
+
+    if (showSystemPackage) {
+      this.allApplications.setListApplications(this.applicationInfoStructList);
+      adapter.refreshData(this.allApplications);
+    } else {
+      List<ApplicationInfoStruct> listSystemApplications = new ArrayList<>();
+
+      for (ApplicationInfoStruct listApplication : this.allApplications.getListApplications()) {
+        if (listApplication.isSystem()) {
+          listSystemApplications.add(listApplication);
+        }
+      }
+
+      int totalNumApplications = listSystemApplications.size();
+      AllApplications allApplicationsSystems =
+          new AllApplications.Builder().setTotalNumApplications(totalNumApplications)
+              .setListApplications(listSystemApplications)
+              .build();
+
+      allApplicationsSystems.recalculateTotals();
+
+      adapter.refreshData(allApplicationsSystems);
     }
   }
 

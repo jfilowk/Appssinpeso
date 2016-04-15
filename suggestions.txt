@@ -3,3 +3,5 @@ A partir del número de veces que algo no ha cambiado considerar la opción de q
 Guardar cuando es de sistema para ir más rápido sin necesidad de tirar una nueva consulta.
 
 Cuando es false, no guardar en BD.
+
+Pensar nuevo objecto AllApplications

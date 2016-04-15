@@ -55,14 +55,13 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
   }
 
   // TODO: Add size photos
-  @Override public void start(final boolean getSystemPackages) {
+  @Override public void start() {
     if (this.listener != null) {
       // TODO: sacar en dos task para execute
       executorService.submit(new Runnable() {
         @Override public void run() {
 
-          final List<ApplicationInfoStruct> listApplications =
-              appDetails.getPackages(getSystemPackages);
+          final List<ApplicationInfoStruct> listApplications = appDetails.getPackages();
 
           if (listApplications.size() == 0) {
             notifyOnError();

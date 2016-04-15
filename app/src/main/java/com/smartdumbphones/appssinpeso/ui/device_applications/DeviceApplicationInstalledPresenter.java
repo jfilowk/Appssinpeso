@@ -7,7 +7,7 @@ public interface DeviceApplicationInstalledPresenter {
 
   void getDetailPackage();
 
-  void filterSystemPackage(boolean getSystemPackage);
+  void filterSystemPackage();
 
   void onDestroy();
 
@@ -19,6 +19,8 @@ public interface DeviceApplicationInstalledPresenter {
     void hideLoading();
 
     void displayListCache(AllApplications allApplications);
+
+    void filterSystemApplications();
 
     void showError(String error);
   }

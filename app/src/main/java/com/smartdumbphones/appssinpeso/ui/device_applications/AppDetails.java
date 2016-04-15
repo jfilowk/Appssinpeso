@@ -16,11 +16,11 @@ public class AppDetails {
     this.context = context;
   }
 
-  public ArrayList<ApplicationInfoStruct> getPackages(boolean getSystemApplications) {
-    return getInstalledApps(getSystemApplications);
+  public ArrayList<ApplicationInfoStruct> getPackages() {
+    return getInstalledApps();
   }
 
-  private ArrayList<ApplicationInfoStruct> getInstalledApps(boolean getSystemApplications) {
+  private ArrayList<ApplicationInfoStruct> getInstalledApps() {
     ArrayList<ApplicationInfoStruct> res = new ArrayList<>();
     PackageManager packageManager = context.getPackageManager();
     List<PackageInfo> packs = packageManager.getInstalledPackages(0);
@@ -33,9 +33,7 @@ public class AppDetails {
       PackageInfo p = packs.get(i);
       ApplicationInfoStruct applicationInfoStruct = new ApplicationInfoStruct();
 
-      if (!getSystemApplications) {
-        if (isNotSystemApplication(p)) continue;
-      }
+      if (isSystemApplication(p)) applicationInfoStruct.setIsSystem(true);
 
       applicationInfoStruct.setAppname(p.applicationInfo.loadLabel(packageManager).toString());
       applicationInfoStruct.setPname(p.packageName);
@@ -47,7 +45,7 @@ public class AppDetails {
     return res;
   }
 
-  private boolean isNotSystemApplication(PackageInfo p) {
-    return (p.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+  private boolean isSystemApplication(PackageInfo p) {
+    return (p.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0;
   }
 }
