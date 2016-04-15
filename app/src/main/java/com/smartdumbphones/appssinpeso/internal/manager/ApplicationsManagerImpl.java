@@ -245,7 +245,7 @@ public class ApplicationsManagerImpl implements ApplicationsManager {
     Random random = new Random();
     boolean i = random.nextBoolean();
 
-    long randomLong = -1;
+    long randomLong = 0;
     if (i) randomLong = 1;
     return randomLong;
   }

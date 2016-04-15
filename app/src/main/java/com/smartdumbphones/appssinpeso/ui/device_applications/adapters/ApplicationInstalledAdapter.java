@@ -176,9 +176,9 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
     textView.setText(generateVarianceText(n));
 
     if (isNegative(n)) {
-      textView.setTextColor(Color.RED);
-    } else {
       textView.setTextColor(Color.GREEN);
+    } else {
+      textView.setTextColor(Color.RED);
     }
 
     return textView;
