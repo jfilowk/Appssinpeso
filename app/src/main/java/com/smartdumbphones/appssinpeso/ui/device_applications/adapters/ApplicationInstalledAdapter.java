@@ -1,6 +1,7 @@
 package com.smartdumbphones.appssinpeso.ui.device_applications.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,33 +138,50 @@ public class ApplicationInstalledAdapter extends RecyclerView.Adapter<RecyclerVi
     public void bindApplicationInfo(ApplicationInfoStruct applicationInfoStruct) {
       txtNameApplication.setText(applicationInfoStruct.getAppname());
       txtAppSize.setText("App: " + getSizeHumanReadbeable(applicationInfoStruct.getApkSize()));
+
       if (applicationInfoStruct.getCacheSize() == 0.0) {
         txtCacheSize.setText("Cache: -");
       } else {
         txtCacheSize.setText(
             "Cache: " + getSizeHumanReadbeable(applicationInfoStruct.getCacheSize()));
       }
+
       if (applicationInfoStruct.getDataSize() == 0.0) {
         txtDataSize.setText("Data: -");
       } else {
         txtDataSize.setText("Data: " + getSizeHumanReadbeable(applicationInfoStruct.getDataSize()));
       }
+
       txtTotalSize.setText(getSizeHumanReadbeable(applicationInfoStruct.getTotalSize()));
       imgIcon.setImageDrawable(applicationInfoStruct.getIcon());
 
       ApplicationInfoCached applicationInfoCached =
           applicationInfoStruct.getApplicationInfoCached();
-      // TODO: 14/04/2016 method to indentify positive or negative
+
       if (applicationInfoCached != null) {
         varianceLinearLayout.setVisibility(View.VISIBLE);
 
-        txtAppSizeVariance.setText(generateVarianceText(applicationInfoCached.getApkSize()));
-        txtCacheSizeVariance.setText(generateVarianceText(applicationInfoCached.getCacheSize()));
-        txtDataSizeVariance.setText(generateVarianceText(applicationInfoCached.getDataSize()));
+        generateTextViewVariance(txtAppSizeVariance, applicationInfoCached.getApkSize());
+        generateTextViewVariance(txtCacheSizeVariance, applicationInfoCached.getCacheSize());
+        generateTextViewVariance(txtDataSizeVariance, applicationInfoCached.getDataSize());
+
       } else {
         varianceLinearLayout.setVisibility(View.GONE);
       }
     }
+  }
+
+  private static TextView generateTextViewVariance(TextView textView, long n) {
+
+    textView.setText(generateVarianceText(n));
+
+    if (isNegative(n)) {
+      textView.setTextColor(Color.GREEN);
+    } else {
+      textView.setTextColor(Color.RED);
+    }
+
+    return textView;
   }
 
   public static class HeaderViewHolder extends RecyclerView.ViewHolder {
